@@ -1,0 +1,46 @@
+{
+  "_note": "Sample artefact for the Forseti mockup. Fictional tenant, fictional values.",
+  "exportedAt": "2026-06-18T09:12:44Z",
+  "exportedBy": "s.devi@example-corp.com",
+  "tenant": {
+    "id": "8f2c1d40-example-4b7a-9c31-meridian",
+    "displayName": "Example Corporation Pty Ltd",
+    "dataBoundary": "EU",
+    "primaryRegion": "EU West",
+    "secondaryRegion": "EU North"
+  },
+  "copilot": {
+    "licensedSeats": 610,
+    "assignedSeats": 604,
+    "webGroundingEnabled": false,
+    "pluginsEnabled": false,
+    "usageAnalyticsRetentionDays": 30,
+    "promptAndResponseRetention": "Not retained for model training",
+    "trainsFoundationModels": false
+  },
+  "dataProtection": {
+    "sensitivityLabelsEnforced": true,
+    "labelsRequiredOnCreate": true,
+    "restrictedLabelsExcludedFromCopilot": [
+      "Highly Confidential",
+      "Special Category"
+    ],
+    "dlpPoliciesApplied": [
+      "AI-01 Block special category in prompts",
+      "AI-02 Warn on confidential in Teams chat"
+    ]
+  },
+  "sharing": {
+    "organisationWideLinksEnabled": false,
+    "anonymousLinksEnabled": false,
+    "externalSharingScope": "ExistingExternalUserSharingOnly",
+    "restrictedAccessControlGroups": 4,
+    "sitesReviewedInLastCycle": 200,
+    "sitesRemediatedInLastCycle": 34
+  },
+  "audit": {
+    "unifiedAuditLogEnabled": true,
+    "copilotInteractionLoggingEnabled": true,
+    "retentionDays": 365
+  }
+}

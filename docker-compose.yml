@@ -1,0 +1,36 @@
+# Local Postgres for development.
+#
+# Production runs on Neon; this exists so the app can be developed and verified
+# offline. Both are Postgres 17, and `src/db/index.ts` picks the right driver
+# from the connection string, so nothing else changes between them.
+#
+#   npm run db:up      start
+#   npm run db:down    stop (data survives)
+#   npm run db:reset   destroy the volume, recreate, migrate, seed
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: forseti-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: forseti
+      # Local-only credentials. This file is committed, so nothing here is or
+      # should ever become a real secret.
+      POSTGRES_PASSWORD: forseti_local_dev
+      POSTGRES_DB: forseti
+    ports:
+      - "5432:5432"
+    volumes:
+      - forseti_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # `db:reset` chains migrate straight after up, and Postgres accepts TCP
+      # connections a moment before it will answer queries — without this the
+      # migration races the server and fails intermittently.
+      test: ["CMD-SHELL", "pg_isready -U forseti -d forseti"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  forseti_pgdata:

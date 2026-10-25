@@ -1,0 +1,46 @@
+# The gate that a worktree workflow needs and a single checkout does not.
+#
+# With several branches in flight at once, "it built on my machine" stops meaning
+# anything — the machine that built it was checked out somewhere else. So every
+# push runs the same four commands CLAUDE.md names, in the same order, on a box
+# that has never seen this repo before.
+#
+# `npm run build` is here because it *is* the typecheck gate: Next resolves the
+# whole route graph, which `tsc --noEmit` alone does not.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    env:
+      # Both of these throw at *import* when absent (src/db/index.ts,
+      # src/lib/auth.ts), so nothing builds without them. Neither is ever
+      # connected to: a non-neon.tech host selects the node-postgres driver,
+      # whose Pool is constructed lazily and dials nothing at build time.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-only-value-not-a-secret-0000000000000000
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      # PGlite compiles a WASM Postgres in-process, so this needs no service
+      # container and no network.
+      - run: npm test
+
+      - run: npm run build

@@ -1,0 +1,18 @@
+# Sample artefact for the Forseti mockup. Fictional systems.
+# AI inventory export - 01 Aug 2026 - Example Corporation Pty Ltd
+name,vendor,origin,gen_ai,business_unit,owner,lifecycle,risk_tier,assessment_status,next_review
+Microsoft 365 Copilot,Microsoft,procured_saas,yes,Technology,S. Devi,production,limited,approved,2027-02-01
+Copilot Studio agents,Microsoft,procured_saas,yes,Customer Operations,M. Hallberg,pilot,high,in_progress,2026-09-15
+ChurnLens,Northbeam Analytics,procured_saas,no,Customer Operations,M. Hallberg,poc,limited,not_started,2026-09-01
+Claim Triage Service,Anthropic,api_integration,yes,Customer Operations,L. Ferreira,production,high,endorsed,2026-08-01
+Demand Forecasting Model,Built in house,internal_model,no,Data & Analytics,K. Nakamura,production,limited,approved,2026-12-01
+GitHub Copilot,GitHub,procured_saas,yes,Technology,L. Ferreira,production,limited,approved,2027-01-15
+TalentScreen,Hirewell Systems,procured_saas,yes,People,A. Boateng,pilot,high,overdue,2026-07-01
+Convene Notetaker,Convene Labs,procured_saas,yes,Marketing,E. Quinn,pilot,high,not_started,2026-08-05
+Internal Knowledge Search,Elastic,api_integration,yes,Technology,S. Devi,production,limited,submitted,2026-11-01
+Invoice Capture OCR,Ledgerline,procured_saas,no,Finance,D. Schulz,production,minimal,approved,2027-01-10
+Campaign Copy Generator,Brightline,procured_saas,yes,Marketing,E. Quinn,production,minimal,in_progress,2026-12-15
+Contract Clause Review,Lexolve,procured_saas,yes,Legal,C. Larsen,poc,limited,not_started,2026-10-28
+DeepL Pro,DeepL,procured_saas,yes,Customer Operations,M. Hallberg,production,minimal,approved,2027-03-01
+Pipeline Lead Scoring,Built in house,internal_model,no,Marketing,K. Nakamura,deprecated,minimal,not_started,2026-06-30
+ChatGPT Team,OpenAI,procured_saas,yes,Data & Analytics,K. Nakamura,pilot,limited,not_started,2026-08-26

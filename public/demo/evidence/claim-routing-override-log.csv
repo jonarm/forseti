@@ -1,0 +1,19 @@
+# Sample artefact for the Forseti mockup. Fictional claims, fictional handlers.
+# Extract: claim triage routing overrides, 01 Jun 2026 - 15 Jul 2026
+timestamp,claim_ref,proposed_queue,proposed_priority,handler,final_queue,final_priority,override,reason
+2026-06-02T08:14:22Z,CLM-88214,Motor,Standard,h.okafor,Motor,Standard,no,
+2026-06-02T09:41:07Z,CLM-88231,Property,Standard,h.okafor,Property,Expedited,yes,Vulnerable customer flag on account
+2026-06-03T11:02:55Z,CLM-88290,Liability,Standard,r.singh,Motor,Standard,yes,Misread vehicle reference as property address
+2026-06-05T14:37:10Z,CLM-88355,Motor,Expedited,r.singh,Motor,Expedited,no,
+2026-06-09T10:19:48Z,CLM-88472,Health,Standard,a.duarte,Health,Expedited,yes,Special category data present; escalated per policy
+2026-06-12T16:55:03Z,CLM-88610,Motor,Standard,h.okafor,Motor,Standard,no,
+2026-06-18T09:23:31Z,CLM-88799,Property,Expedited,l.novak,Property,Standard,yes,Duplicate of CLM-88780 already expedited
+2026-06-24T13:08:19Z,CLM-88964,Health,Expedited,a.duarte,Health,Expedited,no,
+2026-07-01T08:47:52Z,CLM-89112,Liability,Standard,r.singh,Liability,Standard,no,
+2026-07-03T15:30:44Z,CLM-89170,Motor,Standard,l.novak,Motor,Expedited,yes,Customer complaint attached
+2026-07-08T11:12:09Z,CLM-89288,Property,Standard,h.okafor,Property,Standard,no,
+2026-07-14T10:05:37Z,CLM-89401,Health,Standard,a.duarte,Health,Expedited,yes,Handwritten attachment mis-extracted; manual review
+#
+# Summary: 412 claims routed in period. 47 overrides (11.4%).
+# Override rate by claimant segment: no material divergence (max 1.9pp).
+# Queue ageing: 0 claims past service threshold at period end.

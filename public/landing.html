@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Forseti — Simplify AI governance</title>
+<meta name="description" content="Forseti is the AI management system for ISO/IEC 42001. Manage AI across its full lifecycle — intake and risk assessment, framework controls, impact assessments and findings." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ---------------------------------------------------------------------------
+ * Forseti landing page — mockup / playground.
+ *
+ * Dark-only, zinc-based, using the product's own tokens so the marketing page
+ * and the application read as one thing: #09090b page, #18181b surface,
+ * #27272a hairline, indigo #6366f1 for primary actions ONLY, and the three
+ * semantic status colours (emerald ok / amber warn / rose critical) used
+ * exactly as the app uses them.
+ *
+ * Every product visual here is hand-built HTML from the real demo workspace
+ * (Meridian Analytics) — real system names, real finding titles, real intake
+ * statuses, real ISO 42001 control refs — so each `.mock` block can be swapped
+ * for a live screenshot without the layout moving. The "gif" is the hero: CSS
+ * keyframes plus a count-up on scroll.
+ *
+ * The page has one job: get the reader to book a demo. The CTA appears in the
+ * nav, the hero, mid-page, and in the closing form.
+ * ------------------------------------------------------------------------ */
+
+:root{
+  --bg:#09090b; --surface:#18181b; --surface-2:#1c1c20; --sidebar:#0c0c0f;
+  --border:#27272a; --border-soft:#1f1f23;
+  --fg:#fafafa; --muted:#a1a1aa; --muted-2:#71717a;
+  --brand:#6366f1; --brand-2:#818cf8;
+  --ok:#10b981; --warn:#f59e0b; --critical:#f43f5e;
+  --radius:0.625rem;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --maxw:1180px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans);
+  -webkit-font-smoothing:antialiased; line-height:1.5; overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+.eyebrow{
+  font-family:var(--mono); font-size:.62rem; text-transform:uppercase;
+  letter-spacing:.11em; color:var(--muted); font-weight:500;
+}
+.eyebrow--brand{color:var(--brand-2)}
+.lede{color:var(--muted);font-size:1.0625rem;line-height:1.65}
+
+h1,h2,h3{letter-spacing:-.022em;font-weight:600;line-height:1.12}
+h1{font-size:clamp(2.3rem,5.2vw,4rem);letter-spacing:-.035em;line-height:1.05}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem);letter-spacing:-.028em}
+h3{font-size:1.0625rem;letter-spacing:-.012em}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  height:2.75rem;padding:0 1.15rem;border-radius:var(--radius);
+  font-size:.875rem;font-weight:500;white-space:nowrap;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.09) inset,0 8px 24px -12px rgba(99,102,241,.9)}
+.btn-primary:hover{background:#5457e5;transform:translateY(-1px)}
+.btn-ghost{border:1px solid var(--border);color:var(--fg);background:rgba(39,39,42,.25)}
+.btn-ghost:hover{background:var(--surface);border-color:#3f3f46}
+.btn-sm{height:2.25rem;padding:0 .9rem;font-size:.8125rem}
+.btn-lg{height:3rem;padding:0 1.5rem;font-size:.9375rem}
+
+/* ---------- nav ---------- */
+header.nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(9,9,11,.72);backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .25s ease,background .25s ease;
+}
+header.nav.stuck{border-bottom-color:var(--border);background:rgba(9,9,11,.92)}
+.nav-inner{display:flex;align-items:center;gap:2rem;height:4rem}
+.brand{display:flex;align-items:center;gap:.55rem;font-weight:600;letter-spacing:-.02em;font-size:1.0625rem}
+.nav-links{display:flex;align-items:center;gap:1.75rem;margin-left:.5rem;font-size:.875rem;color:var(--muted)}
+.nav-links a{transition:color .15s ease}
+.nav-links a:hover{color:var(--fg)}
+.nav-cta{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.nav-signin{font-size:.875rem;color:var(--muted)}
+.nav-signin:hover{color:var(--fg)}
+@media(max-width:900px){.nav-links,.nav-signin{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:5.5rem 0 3rem;text-align:center;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:-30% 0 auto 0;height:820px;pointer-events:none;
+  background:
+    radial-gradient(58% 46% at 50% 22%,rgba(99,102,241,.22),transparent 70%),
+    radial-gradient(38% 34% at 78% 8%,rgba(16,185,129,.08),transparent 70%);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(var(--border-soft) 1px,transparent 1px),linear-gradient(90deg,var(--border-soft) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(60% 50% at 50% 20%,#000,transparent 78%);
+  mask-image:radial-gradient(60% 50% at 50% 20%,#000,transparent 78%);
+}
+.hero>*{position:relative;z-index:1}
+.pill{
+  display:inline-flex;align-items:center;gap:.55rem;
+  border:1px solid var(--border);background:rgba(24,24,27,.7);
+  border-radius:999px;padding:.35rem .8rem .35rem .5rem;
+  font-size:.75rem;color:var(--muted);margin-bottom:1.75rem;
+}
+.pill b{color:var(--fg);font-weight:500}
+.dot{width:.45rem;height:.45rem;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(16,185,129,.16);animation:pulse 2.4s ease-in-out infinite;flex:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{max-width:16ch;margin-inline:auto}
+.hero h1 .grad{
+  background:linear-gradient(100deg,#fafafa 8%,#a5b4fc 52%,#6366f1 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p.lede{max-width:58ch;margin:1.6rem auto 0;font-size:1.125rem}
+.hero-cta{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:2.25rem}
+.hero-note{margin-top:1.15rem;font-size:.8125rem;color:var(--muted-2)}
+.hero-visual{margin-top:3.5rem}
+
+/* ---------- app mock chrome ---------- */
+.mock{
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  background:var(--sidebar);
+  box-shadow:0 40px 80px -32px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.02) inset;
+}
+.mock-bar{
+  display:flex;align-items:center;gap:.75rem;height:2.5rem;padding:0 .9rem;
+  background:#0f0f12;border-bottom:1px solid var(--border);
+}
+.dots{display:flex;gap:.4rem}
+.dots i{width:.6rem;height:.6rem;border-radius:50%;background:#2e2e35;display:block}
+.url{
+  flex:1;max-width:22rem;margin-inline:auto;height:1.55rem;border-radius:6px;
+  background:#141418;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  font-family:var(--mono);font-size:.65rem;color:var(--muted-2);
+}
+.mock-body{display:grid;grid-template-columns:13.5rem 1fr;min-height:0}
+@media(max-width:860px){.mock-body{grid-template-columns:1fr}.mock-side{display:none}}
+.mock-side{background:var(--sidebar);border-right:1px solid var(--border);padding:.9rem .65rem}
+.side-brand{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem .9rem;font-size:.8125rem;font-weight:600}
+.side-group{font-family:var(--mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.12em;color:#52525b;padding:.8rem .55rem .3rem}
+.side-item{display:flex;align-items:center;gap:.55rem;padding:.34rem .55rem;border-radius:6px;font-size:.75rem;color:var(--muted)}
+.side-item .ico{width:.8rem;height:.8rem;border-radius:3px;border:1.5px solid currentColor;opacity:.45;flex:none}
+.side-item.on{background:var(--surface-2);color:var(--fg)}
+.side-item.on .ico{opacity:1;border-color:var(--brand);background:rgba(99,102,241,.25)}
+.mock-main{background:var(--bg);padding:1.4rem 1.5rem 1.6rem;min-width:0}
+.mock-main--flat{padding:1.25rem}
+
+/* ---------- app-ish pieces ---------- */
+.m-eyebrow{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted-2)}
+.m-h1{font-size:1.0625rem;font-weight:600;letter-spacing:-.015em;margin-top:.2rem}
+.m-sub{font-size:.72rem;color:var(--muted);margin-top:.4rem;max-width:56ch;line-height:1.55}
+.panel{border:1px solid var(--border);border-radius:var(--radius);background:rgba(39,39,42,.2);padding:1rem}
+.figure{font-size:2.5rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.t-ok{color:var(--ok)} .t-warn{color:var(--warn)} .t-crit{color:var(--critical)} .t-muted{color:var(--muted)}
+.bar{height:.35rem;border-radius:999px;background:#27272a;overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:999px;width:0;transition:width 1.5s cubic-bezier(.22,.85,.3,1)}
+.f-ok>span{background:var(--ok)} .f-warn>span{background:var(--warn)} .f-crit>span{background:var(--critical)} .f-brand>span{background:var(--brand)}
+.barrow{display:flex;justify-content:space-between;font-size:.6875rem;color:var(--muted);margin-bottom:.32rem}
+.badge{
+  display:inline-flex;align-items:center;gap:.3rem;border-radius:5px;padding:.1rem .4rem;
+  font-size:.625rem;font-weight:500;border:1px solid;white-space:nowrap;line-height:1.4;
+}
+.b-ok{color:var(--ok);border-color:rgba(16,185,129,.32);background:rgba(16,185,129,.09)}
+.b-warn{color:var(--warn);border-color:rgba(245,158,11,.32);background:rgba(245,158,11,.09)}
+.b-crit{color:var(--critical);border-color:rgba(244,63,94,.32);background:rgba(244,63,94,.09)}
+.b-info{color:var(--brand-2);border-color:rgba(99,102,241,.34);background:rgba(99,102,241,.1)}
+.b-neutral{color:var(--muted);border-color:var(--border);background:rgba(39,39,42,.4)}
+
+table.reg{width:100%;border-collapse:collapse;font-size:.7rem}
+table.reg th{
+  text-align:left;font-family:var(--mono);font-size:.54rem;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--muted-2);font-weight:500;
+  padding:.45rem .5rem;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+table.reg td{padding:.55rem .5rem;border-bottom:1px solid var(--border-soft);color:var(--muted);vertical-align:middle}
+table.reg tbody tr:last-child td{border-bottom:0}
+table.reg td.name{color:var(--fg);font-weight:500;white-space:nowrap}
+table.reg td.name .sub{display:block;font-weight:400;font-size:.6rem;color:var(--muted-2);margin-top:.1rem}
+table.reg td.num{text-align:right;font-variant-numeric:tabular-nums}
+table.reg th.num{text-align:right}
+/* The mocks stay scrollable either way. Above 960px every table fits, so the
+ * scrollbar chrome is hidden — a visible track inside a "screenshot" reads as
+ * a broken layout. Below that the tables genuinely overflow, and the track is
+ * the only affordance saying so, so it stays. */
+.scroll-x{overflow-x:auto}
+@media(min-width:961px){
+  .scroll-x{scrollbar-width:none;-ms-overflow-style:none}
+  .scroll-x::-webkit-scrollbar{display:none}
+}
+
+/* ---------- sections ---------- */
+/* The nav is sticky, so an anchor target has to clear it. */
+section[id]{scroll-margin-top:5rem}
+.sec{padding:5.5rem 0}
+.sec-tight{padding:3.5rem 0}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.sec-head{max-width:44rem}
+.sec-head h2{margin-top:.9rem}
+.sec-head p{margin-top:1.1rem}
+.sec-head.center{margin-inline:auto;text-align:center}
+
+.feature{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:4rem;align-items:center}
+.feature+.feature{margin-top:6.5rem}
+/* Flipping moves the copy to the second cell, so the column widths have to
+ * flip with it — otherwise the mock inherits the narrow column and its table
+ * clips. */
+.feature.flip{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+.feature.flip .feature-copy{order:2}
+@media(max-width:960px){.feature,.feature.flip{grid-template-columns:1fr;gap:2.25rem}.feature+.feature{margin-top:4.5rem}.feature.flip .feature-copy{order:0}}
+.feature-copy h2{font-size:clamp(1.45rem,2.6vw,2rem);margin-top:.85rem}
+.feature-copy p{margin-top:1rem;color:var(--muted);line-height:1.65;font-size:.9375rem}
+.ticks{margin-top:1.6rem;display:grid;gap:.7rem}
+.tick{display:flex;gap:.65rem;font-size:.875rem;color:var(--muted);align-items:flex-start;line-height:1.55}
+.tick svg{flex:none;margin-top:.28rem;color:var(--ok)}
+.tick b{color:var(--fg);font-weight:500}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:860px){.cards{grid-template-columns:1fr}}
+.card{
+  border:1px solid var(--border);border-radius:12px;background:var(--surface);
+  padding:1.5rem;transition:border-color .2s ease,transform .2s ease;
+}
+.card:hover{border-color:#3f3f46;transform:translateY(-2px)}
+.card .figure{margin-bottom:.7rem}
+.card h3{margin-bottom:.5rem}
+.card p{font-size:.875rem;color:var(--muted);line-height:1.6}
+
+/* ---------- standards ----------
+ * One standard is in scope for the MVP, so this is a single centred tile
+ * rather than a row of them. A five-column strip holding one cell reads as
+ * four missing logos. */
+.strip{display:flex;justify-content:center}
+.strip div{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:1.5rem 2.75rem;text-align:center;
+}
+.strip .k{font-size:1.0625rem;font-weight:600;letter-spacing:-.015em}
+.strip .v{font-size:.75rem;color:var(--muted-2);margin-top:.4rem}
+
+/* ---------- mid CTA banner ---------- */
+.banner{
+  border:1px solid var(--border);border-radius:14px;background:var(--surface);
+  padding:2.25rem 2.5rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap;
+  justify-content:space-between;
+}
+.banner h3{font-size:1.35rem;letter-spacing:-.02em}
+.banner p{color:var(--muted);font-size:.9375rem;margin-top:.5rem;max-width:46ch}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;counter-reset:s}
+@media(max-width:860px){.steps{grid-template-columns:1fr}}
+.step{padding-top:1.25rem;border-top:1px solid var(--border)}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:var(--mono);font-size:.65rem;color:var(--brand-2);letter-spacing:.1em}
+.step h3{margin:.6rem 0 .5rem}
+.step p{font-size:.875rem;color:var(--muted);line-height:1.6}
+
+/* ---------- CTA / form ---------- */
+.cta{position:relative;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(24,24,27,.95),rgba(9,9,11,.95))}
+.cta::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 90% at 18% 0%,rgba(99,102,241,.17),transparent 65%)}
+.cta-inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,26rem);gap:3.5rem;padding:3.25rem}
+@media(max-width:900px){.cta-inner{grid-template-columns:1fr;gap:2.25rem;padding:2rem}}
+.cta h2{font-size:clamp(1.6rem,3vw,2.25rem)}
+.form{display:grid;gap:.85rem}
+.field{display:grid;gap:.35rem}
+.field label{font-size:.75rem;color:var(--muted)}
+.field input,.field select,.field textarea{
+  width:100%;height:2.6rem;padding:0 .75rem;border-radius:8px;
+  background:#0f0f12;border:1px solid var(--border);color:var(--fg);
+  font-family:var(--sans);font-size:.875rem;outline:none;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.field textarea{height:auto;padding:.6rem .75rem;resize:vertical;min-height:4.5rem;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16)}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(max-width:480px){.form .row{grid-template-columns:1fr}}
+.form-note{font-size:.7rem;color:var(--muted-2);line-height:1.55}
+.mock-flag{
+  display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);
+  font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--warn);
+  border:1px dashed rgba(245,158,11,.42);border-radius:6px;padding:.25rem .5rem;
+}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--border);padding:3rem 0 2.5rem;margin-top:1.5rem}
+.foot{display:flex;flex-wrap:wrap;gap:2.5rem;justify-content:space-between;align-items:flex-start}
+.foot-brand{max-width:22rem}
+.foot-brand p{margin-top:.9rem;font-size:.8125rem;color:var(--muted-2);line-height:1.6}
+.foot-cols{display:flex;gap:4rem;flex-wrap:wrap}
+.foot-col{display:grid;gap:.6rem;font-size:.8125rem;color:var(--muted);align-content:start}
+.foot-col .h{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted-2)}
+.foot-col a{transition:color .15s ease}
+.foot-col a:hover{color:var(--fg)}
+.foot-base{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.75rem;color:var(--muted-2)}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.22,.8,.3,1),transform .7s cubic-bezier(.22,.8,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .bar>span{transition:none}
+  *{animation:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================================================================== nav -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <defs><linearGradient id="lg1" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#818cf8"/><stop offset="1" stop-color="#4f46e5"/>
+        </linearGradient></defs>
+        <path d="M12 2.4 20 5.5v6.4c0 4.6-3.2 8.4-8 9.7-4.8-1.3-8-5.1-8-9.7V5.5l8-3.1Z" fill="url(#lg1)"/>
+      </svg>
+      Forseti
+    </a>
+    <nav class="nav-links">
+      <a href="#platform">Platform</a>
+      <a href="#inventory">AI inventory</a>
+      <a href="#standards">Standards</a>
+      <a href="#gtm">Trust centre</a>
+      <a href="#demo">Demo</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="nav-signin" href="https://demo.theforseti.ai/sign-in">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="#demo">Book a demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- ==================================================================== hero -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span><b>ISO/IEC 42001</b> · AI management system</span>
+    <h1>Simplify <span class="grad">AI Governance</span></h1>
+    <p class="lede">
+      Manage AI across its full lifecycle—from intake and risk assessment through
+      framework controls, impact assessments, and findings.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="#demo">Book a demo
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost btn-lg" href="#platform">See how it works</a>
+    </div>
+    <!-- Hero product visual: the readiness dashboard. This is the animated one. -->
+    <div class="hero-visual rv">
+      <div class="mock">
+        <div class="mock-bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="url">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            app.forseti.io/overview
+          </div>
+        </div>
+        <div class="mock-body">
+          <aside class="mock-side">
+            <div class="side-brand">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <defs><linearGradient id="lg2" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#818cf8"/><stop offset="1" stop-color="#4f46e5"/>
+                </linearGradient></defs>
+                <path d="M12 2.4 20 5.5v6.4c0 4.6-3.2 8.4-8 9.7-4.8-1.3-8-5.1-8-9.7V5.5l8-3.1Z" fill="url(#lg2)"/>
+              </svg>
+              Meridian Analytics
+            </div>
+            <div class="side-item on"><span class="ico"></span>Readiness</div>
+            <div class="side-group">Discover</div>
+            <div class="side-item"><span class="ico"></span>AI Inventory</div>
+            <div class="side-item"><span class="ico"></span>Use cases</div>
+            <div class="side-item"><span class="ico"></span>Intake &amp; triage</div>
+            <div class="side-group">Govern</div>
+            <div class="side-item"><span class="ico"></span>Frameworks</div>
+            <div class="side-item"><span class="ico"></span>Risk register</div>
+            <div class="side-item"><span class="ico"></span>Findings</div>
+            <div class="side-item"><span class="ico"></span>Evidence</div>
+            <div class="side-item"><span class="ico"></span>Impact assessments</div>
+            <div class="side-group">Go to market</div>
+            <div class="side-item"><span class="ico"></span>Questionnaires</div>
+            <div class="side-item"><span class="ico"></span>Trust centre</div>
+            <div class="side-item"><span class="ico"></span>Audit pack</div>
+          </aside>
+
+          <div class="mock-main" style="text-align:left">
+            <p class="m-eyebrow">Readiness · 27 August 2026</p>
+            <h2 class="m-h1">ISO 42001</h2>
+            <p class="m-sub">
+              Derived from the inventory, the Statement of Applicability and the
+              evidence register. Nothing here is stored, so a document expiring
+              moves the number without anyone editing it.
+            </p>
+
+            <div style="display:grid;gap:1rem;grid-template-columns:minmax(0,15rem) 1fr;margin-top:1.15rem" class="hero-grid">
+              <div class="panel" style="display:grid;gap:.85rem;align-content:start">
+                <div>
+                  <p class="m-eyebrow" style="opacity:.7">Ready</p>
+                  <div style="display:flex;align-items:baseline;gap:.4rem;margin-top:.35rem">
+                    <span class="figure t-warn" data-count="61">61</span>
+                    <span class="t-warn" style="font-size:1.1rem;font-weight:600">%</span>
+                    <span style="font-size:.65rem;color:var(--muted-2)">32 of 52 controls</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="barrow"><span>Implemented</span><span class="t-muted">83%</span></div>
+                  <div class="bar f-ok"><span data-w="83" style="--w:83%"></span></div>
+                </div>
+                <div>
+                  <div class="barrow"><span>Evidence current</span><span class="t-muted">61%</span></div>
+                  <div class="bar f-warn"><span data-w="61" style="--w:61%"></span></div>
+                </div>
+                <p style="font-size:.62rem;line-height:1.5;color:var(--muted-2);border-top:1px solid var(--border);padding-top:.6rem">
+                  A control counts as ready only when it is applicable, implemented
+                  <em>and</em> carries evidence that is verified and current.
+                </p>
+              </div>
+
+              <div style="display:grid;gap:.75rem;align-content:start">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem" class="hero-stats">
+                  <div class="panel" style="padding:.7rem .8rem">
+                    <p class="m-eyebrow" style="font-size:.5rem">Systems</p>
+                    <p style="font-size:1.35rem;font-weight:600;margin-top:.2rem" data-count="24">24</p>
+                    <p style="font-size:.6rem;color:var(--muted-2)">3 unassessed</p>
+                  </div>
+                  <div class="panel" style="padding:.7rem .8rem">
+                    <p class="m-eyebrow" style="font-size:.5rem">Use cases</p>
+                    <p style="font-size:1.35rem;font-weight:600;margin-top:.2rem" data-count="17">17</p>
+                    <p style="font-size:.6rem;color:var(--muted-2)">4 high risk</p>
+                  </div>
+                  <div class="panel" style="padding:.7rem .8rem">
+                    <p class="m-eyebrow" style="font-size:.5rem">Evidence</p>
+                    <p class="t-warn" style="font-size:1.35rem;font-weight:600;margin-top:.2rem" data-count="9">9</p>
+                    <p style="font-size:.6rem;color:var(--muted-2)">expiring in 30d</p>
+                  </div>
+                  <div class="panel" style="padding:.7rem .8rem">
+                    <p class="m-eyebrow" style="font-size:.5rem">Findings</p>
+                    <p class="t-crit" style="font-size:1.35rem;font-weight:600;margin-top:.2rem" data-count="5">5</p>
+                    <p style="font-size:.6rem;color:var(--muted-2)">open</p>
+                  </div>
+                </div>
+
+                <div class="panel" style="padding:.55rem .35rem .35rem">
+                  <p class="m-eyebrow" style="padding:.15rem .65rem .5rem">Needs attention</p>
+                  <div class="scroll-x">
+                  <table class="reg">
+                    <tbody>
+                      <tr><td class="name">Call recording tool in use with no assessment and no DPA</td>
+                          <td style="width:1%"><span class="badge b-crit">Critical</span></td>
+                          <td class="num" style="width:1%;white-space:nowrap">Convene Notetaker</td></tr>
+                      <tr><td class="name">TalentScreen impact assessment has expired</td>
+                          <td><span class="badge b-crit">Overdue</span></td>
+                          <td class="num" style="white-space:nowrap">TalentScreen</td></tr>
+                      <tr><td class="name">Four AI tools running on click-through terms</td>
+                          <td><span class="badge b-warn">Action needed</span></td>
+                          <td class="num" style="white-space:nowrap">Org-level</td></tr>
+                      <tr><td class="name">Over-shared SharePoint sites surfaced through Copilot search</td>
+                          <td><span class="badge b-warn">In progress</span></td>
+                          <td class="num" style="white-space:nowrap">M365 Copilot</td></tr>
+                    </tbody>
+                  </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================= problem -->
+<section class="sec" id="platform">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow eyebrow--brand">The problem</p>
+      <h2>Most organisations cannot name every AI system they run.</h2>
+      <p class="lede">
+        Let alone say who owns it, what it may be given, or whether a person
+        checks its output. That is the question a customer's security review
+        now opens with — and the one an ISO 42001 auditor closes with.
+      </p>
+    </div>
+
+    <div class="cards rv" style="margin-top:3rem">
+      <div class="card">
+        <p class="figure t-warn">3&times;</p>
+        <h3>Shadow AI outruns procurement</h3>
+        <p>Tools arrive on a company card and an SSO login. By the time governance hears about one, it is already in a customer-facing workflow.</p>
+      </div>
+      <div class="card">
+        <p class="figure t-crit">Weeks</p>
+        <h3>Every questionnaire starts from zero</h3>
+        <p>An AI due-diligence questionnaire lands, and four people spend a fortnight reconstructing answers from Slack, tickets and memory.</p>
+      </div>
+      <div class="card">
+        <p class="figure t-ok">1 list</p>
+        <h3>Everything downstream needs the same list</h3>
+        <p>Assessments, the Statement of Applicability, the risk register, the trust centre and the audit pack are all views of one register — or they disagree.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="rule"></div></div>
+
+<!-- ================================================================ features -->
+<section class="sec" id="inventory">
+  <div class="wrap">
+
+    <!-- Feature 1 — the inventory -->
+    <div class="feature">
+      <div class="feature-copy rv">
+        <p class="eyebrow eyebrow--brand">AI inventory</p>
+        <h2>The list has to exist before anything else can be true</h2>
+        <p>
+          Register every AI system — bought, integrated or built — with its
+          vendor, its owner, its lifecycle stage and what it is permitted to be
+          given. Import a spreadsheet on day one; the plan is shown before a
+          single row is written, and invalid rows are rejected rather than
+          quietly coerced.
+        </p>
+        <div class="ticks">
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Origin, owner, stage and vendor</b> on every row — the fields the rest of the system reads.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Coverage per system</b>, computed live against ISO 42001 — never a stored number that drifts.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Export the register</b> as CSV, XLSX or PDF with the columns you picked, ready to attach to an answer.</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="mock">
+          <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.forseti.io/inventory</div></div>
+          <div class="mock-main mock-main--flat">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+              <span class="badge b-neutral">All origins</span>
+              <span class="badge b-neutral">All stages</span>
+              <span class="badge b-info">Risk tier: High</span>
+              <span style="margin-left:auto;font-size:.62rem;color:var(--muted-2)">24 systems</span>
+            </div>
+            <div class="scroll-x">
+            <table class="reg">
+              <thead>
+                <tr>
+                  <th>System</th><th>Origin</th><th>Owner</th>
+                  <th>Stage</th><th>Risk tier</th><th class="num">ISO 42001</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="name">Microsoft 365 Copilot<span class="sub">Microsoft Ireland</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td><td>S. Devi</td>
+                  <td>Production</td><td><span class="badge b-neutral">Limited</span></td>
+                  <td class="num t-ok">86%</td>
+                </tr>
+                <tr>
+                  <td class="name">TalentScreen<span class="sub">Hirewell Systems</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td><td>A. Boateng</td>
+                  <td>Pilot</td><td><span class="badge b-crit">High</span></td>
+                  <td class="num t-crit">41%</td>
+                </tr>
+                <tr>
+                  <td class="name">Claim Triage Service<span class="sub">Anthropic PBC</span></td>
+                  <td><span class="badge b-neutral">API</span></td><td>L. Ferreira</td>
+                  <td>Production</td><td><span class="badge b-crit">High</span></td>
+                  <td class="num t-warn">68%</td>
+                </tr>
+                <tr>
+                  <td class="name">Convene Notetaker<span class="sub">Convene Labs</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td><td>E. Quinn</td>
+                  <td>Pilot</td><td><span class="badge b-crit">High</span></td>
+                  <td class="num t-crit">28%</td>
+                </tr>
+                <tr>
+                  <td class="name">Demand Forecasting Model<span class="sub">Built in house</span></td>
+                  <td><span class="badge b-neutral">Internal</span></td><td>K. Nakamura</td>
+                  <td>Production</td><td><span class="badge b-neutral">Limited</span></td>
+                  <td class="num t-ok">79%</td>
+                </tr>
+                <tr>
+                  <td class="name">GitHub Copilot<span class="sub">GitHub, Inc.</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td><td>L. Ferreira</td>
+                  <td>Production</td><td><span class="badge b-neutral">Limited</span></td>
+                  <td class="num t-ok">91%</td>
+                </tr>
+                <tr>
+                  <td class="name">Invoice Capture OCR<span class="sub">Northbeam Analytics</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td><td>D. Schulz</td>
+                  <td>Production</td><td><span class="badge b-neutral">Minimal</span></td>
+                  <td class="num t-ok">88%</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2 — system vs use case -->
+    <div class="feature flip">
+      <div class="feature-copy rv">
+        <p class="eyebrow eyebrow--brand">Use cases</p>
+        <h2>A system and a use case are different objects</h2>
+        <p>
+          Risk does not live at the tool. One assistant that both drafts meeting
+          notes and ranks job applicants is two entirely different conversations
+          — and only one of them is high risk. Forseti models the purpose
+          separately from the system, and lets a single pairing carry its own
+          tier where it genuinely differs.
+        </p>
+        <div class="ticks">
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Many-to-many by design</b> — a purpose served by three tools counts for all three.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Baseline plus override</b> — the purpose sets the tier; a specific pairing may raise it.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Human oversight recorded per use case</b>, and published as the weakest arrangement, never the flattering one.</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="mock">
+          <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.forseti.io/use-cases</div></div>
+          <div class="mock-main mock-main--flat">
+            <div class="scroll-x">
+            <table class="reg">
+              <thead><tr><th>Use case</th><th>Implemented by</th><th>Risk tier</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="name">Application screening and ranking<span class="sub">Oversight · decision reviewed</span></td>
+                  <td><span class="badge b-neutral">TalentScreen</span></td>
+                  <td><span class="badge b-crit">High</span></td>
+                  <td><span class="badge b-warn">Assessment expired</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Meeting summarisation<span class="sub">Oversight · spot checked</span></td>
+                  <td><span class="badge b-neutral">M365 Copilot</span> <span class="badge b-neutral">Convene Notetaker</span></td>
+                  <td><span class="badge b-neutral">Limited</span> <span class="badge b-info" title="One pairing overrides the baseline tier">+1 override</span></td>
+                  <td><span class="badge b-ok">Governed</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Claim routing and priority<span class="sub">Oversight · human in the loop</span></td>
+                  <td><span class="badge b-neutral">Claim Triage Service</span></td>
+                  <td><span class="badge b-crit">High</span></td>
+                  <td><span class="badge b-ok">Governed</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Support agent assist<span class="sub">Oversight · sampled weekly</span></td>
+                  <td><span class="badge b-neutral">Copilot Studio agents</span></td>
+                  <td><span class="badge b-warn">Elevated</span></td>
+                  <td><span class="badge b-ok">Governed</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Code completion and chat<span class="sub">Oversight · reviewed at merge</span></td>
+                  <td><span class="badge b-neutral">GitHub Copilot</span></td>
+                  <td><span class="badge b-neutral">Limited</span></td>
+                  <td><span class="badge b-ok">Governed</span></td>
+                </tr>
+                <tr>
+                  <td class="name">Retention outreach prioritisation<span class="sub">Oversight · spot checked</span></td>
+                  <td><span class="badge b-neutral">ChurnLens</span></td>
+                  <td><span class="badge b-warn">Elevated</span></td>
+                  <td><span class="badge b-warn">Awaiting assessment</span></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3 — intake & triage -->
+    <div class="feature">
+      <div class="feature-copy rv">
+        <p class="eyebrow eyebrow--brand">Intake &amp; triage</p>
+        <h2>Origin decides the questions</h2>
+        <p>
+          Procured SaaS, an API integration and a model built in house raise
+          different questions — same workflow, different question set. A request
+          arrives, the triage rules recommend the review type from the answers
+          themselves, and a reviewer either agrees or departs from it on the
+          record.
+        </p>
+        <div class="ticks">
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>The recommendation is computed server-side</b>, so nobody can submit a request that has already agreed with itself.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>A departure is measured and shown</b> — an override needs a justification, not a shrug.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>An endorsed request becomes a registered system</b> — the queue is where the inventory grows from.</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="mock">
+          <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.forseti.io/intake</div></div>
+          <div class="mock-main mock-main--flat">
+            <div style="display:flex;gap:.4rem;margin-bottom:.8rem;flex-wrap:wrap">
+              <span class="badge b-warn">Awaiting triage · 2</span>
+              <span class="badge b-warn">Awaiting decision · 1</span>
+              <span class="badge b-info">With requester · 1</span>
+              <span class="badge b-ok">Settled · 12</span>
+            </div>
+            <div class="scroll-x">
+            <table class="reg">
+              <thead><tr><th>Request</th><th>Origin</th><th>Recommended</th><th>Status</th><th class="num">Days</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="name">Convene Notetaker — external calls<span class="sub">E. Quinn · Marketing</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td>
+                  <td><span class="badge b-crit">Full review</span></td>
+                  <td><span class="badge b-warn">Awaiting decision</span></td><td class="num">6</td>
+                </tr>
+                <tr>
+                  <td class="name">Contract clause extraction<span class="sub">C. Larsen · Legal</span></td>
+                  <td><span class="badge b-neutral">API</span></td>
+                  <td><span class="badge b-warn">Standard review</span></td>
+                  <td><span class="badge b-warn">Awaiting triage</span></td><td class="num">2</td>
+                </tr>
+                <tr>
+                  <td class="name">Marketing copy assistant<span class="sub">E. Quinn · Marketing</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td>
+                  <td><span class="badge b-neutral">Light touch</span></td>
+                  <td><span class="badge b-info">With requester</span></td><td class="num">9</td>
+                </tr>
+                <tr>
+                  <td class="name">Demand Forecasting Model v2<span class="sub">K. Nakamura · Data &amp; Analytics</span></td>
+                  <td><span class="badge b-neutral">Internal</span></td>
+                  <td><span class="badge b-warn">Standard review</span></td>
+                  <td><span class="badge b-ok">Endorsed</span></td><td class="num">—</td>
+                </tr>
+                <tr>
+                  <td class="name">Meeting transcription trial<span class="sub">S. Devi · Technology</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td>
+                  <td><span class="badge b-neutral">Light touch</span></td>
+                  <td><span class="badge b-ok">Noted</span></td><td class="num">—</td>
+                </tr>
+                <tr>
+                  <td class="name">Candidate sourcing scraper<span class="sub">A. Boateng · People</span></td>
+                  <td><span class="badge b-neutral">SaaS</span></td>
+                  <td><span class="badge b-crit">Full review</span></td>
+                  <td><span class="badge b-neutral">Rejected</span></td><td class="num">—</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <div class="panel" style="margin-top:.75rem;padding:.7rem .8rem;display:flex;gap:.75rem;align-items:flex-start">
+              <span class="badge b-info" style="flex:none;margin-top:.1rem">Triage</span>
+              <p style="font-size:.66rem;color:var(--muted);line-height:1.55">
+                <b style="color:var(--fg)">Full review recommended.</b> The system records
+                external parties without a standing notice, and the vendor's terms are
+                click-through. A reviewer departing from this must say why — and the
+                departure is what an auditor reads.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 4 — SoA -->
+    <div class="feature flip">
+      <div class="feature-copy rv">
+        <p class="eyebrow eyebrow--brand">Statement of Applicability</p>
+        <h2>Applicability is a join, not a property of a control</h2>
+        <p>
+          Your Statement of Applicability <em>is</em> that join — per framework,
+          per control, per system. Controls about training data and model design
+          do not apply to an organisation that buys its AI, so the SoA arrives
+          with a defensible consumption-only posture already argued, rather than
+          eighty rows to copy-paste a rationale into.
+        </p>
+        <div class="ticks">
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>An exclusion without a written rationale is refused</b> by the server, not just discouraged by the form.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Evidence is cited against the control</b> it proves — and coverage falls the day that document expires.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Claim controls against systems</b>, so "who does this apply to" has an answer with names in it.</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="mock">
+          <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.forseti.io/frameworks/iso-42001</div></div>
+          <div class="mock-main mock-main--flat">
+            <div class="scroll-x">
+            <table class="reg">
+              <thead><tr><th>Ref</th><th>Control</th><th>Applicable</th><th>Status</th><th class="num">Evidence</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="name" style="font-family:var(--mono);font-size:.62rem">4.1</td>
+                  <td class="name" style="white-space:normal">Scope of the AI management system<span class="sub">R. Andersen</span></td>
+                  <td><span class="badge b-ok">Yes</span></td><td><span class="badge b-ok">Implemented</span></td>
+                  <td class="num t-ok">2 current</td>
+                </tr>
+                <tr>
+                  <td class="name" style="font-family:var(--mono);font-size:.62rem">5.2</td>
+                  <td class="name" style="white-space:normal">AI policy<span class="sub">R. Andersen</span></td>
+                  <td><span class="badge b-ok">Yes</span></td><td><span class="badge b-warn">In progress</span></td>
+                  <td class="num t-warn">Draft only</td>
+                </tr>
+                <tr>
+                  <td class="name" style="font-family:var(--mono);font-size:.62rem">6.1.4</td>
+                  <td class="name" style="white-space:normal">AI system impact assessment<span class="sub">J. Marek</span></td>
+                  <td><span class="badge b-ok">Yes</span></td><td><span class="badge b-crit">Gap</span></td>
+                  <td class="num t-crit">1 expired</td>
+                </tr>
+                <tr>
+                  <td class="name" style="font-family:var(--mono);font-size:.62rem">7.2</td>
+                  <td class="name" style="white-space:normal">Competence<span class="sub">T. Oyelaran</span></td>
+                  <td><span class="badge b-ok">Yes</span></td><td><span class="badge b-ok">Implemented</span></td>
+                  <td class="num t-ok">3 current</td>
+                </tr>
+                <tr>
+                  <td class="name" style="font-family:var(--mono);font-size:.62rem">A.7.4</td>
+                  <td class="name" style="white-space:normal">Training data provenance<span class="sub">K. Nakamura</span></td>
+                  <td><span class="badge b-neutral">N/A</span></td><td><span class="badge b-neutral">Excluded</span></td>
+                  <td class="num">—</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <div class="panel" style="margin-top:.75rem;padding:.7rem .8rem">
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
+                <span class="badge b-info">A.7.4 · Exclusion rationale</span>
+                <span style="margin-left:auto;font-size:.58rem;color:var(--muted-2)">required before this row can be saved</span>
+              </div>
+              <p style="font-size:.66rem;color:var(--muted);line-height:1.6">
+                Meridian consumes third-party models and trains none of its own. No
+                system in the inventory has an origin of <em>internal model</em> with a
+                training corpus under Meridian's control, so provenance obligations sit
+                with the provider and are carried in the vendor commitments recorded
+                against each system.
+              </p>
+              <div style="display:flex;gap:.4rem;margin-top:.6rem;align-items:center">
+                <span class="btn btn-primary btn-sm" style="height:1.7rem;padding:0 .6rem;font-size:.65rem">Save exclusion</span>
+                <span class="btn btn-ghost btn-sm" style="height:1.7rem;padding:0 .6rem;font-size:.65rem">Draft one for me</span>
+                <span style="font-size:.58rem;color:var(--muted-2);margin-left:auto">AI drafts the prose · a person approves it</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================== mid-page CTA -->
+<section class="sec-tight">
+  <div class="wrap">
+    <div class="banner rv">
+      <div>
+        <h3>See it against your own AI stack</h3>
+        <p>Bring the tools you already know about. We will show you what the register looks like once they are in it — and what it says you cannot yet prove.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="#demo">Book a demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================== AI proposes / disposes -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <p class="eyebrow eyebrow--brand">How the AI is used</p>
+      <h2>AI proposes, humans dispose — and everything is audited</h2>
+      <p class="lede">
+        A suggestion changes nothing until a person accepts it. The trail records
+        both the person and the suggestion they accepted, and the model is never
+        asked to score its own confidence or invent a coverage figure. Code owns
+        every number on the screen.
+      </p>
+    </div>
+
+    <div class="cards rv" style="margin-top:3rem">
+      <div class="card">
+        <h3>Drafts the prose you would have written</h3>
+        <p>Exclusion rationales, risk descriptions, impact assessment narrative — written from the records already on file, never from thin air.</p>
+      </div>
+      <div class="card">
+        <h3>Answers questionnaires from the register</h3>
+        <p>Every answer is grounded in a record and cites it. An answer can never claim more than the inventory supports.</p>
+      </div>
+      <div class="card">
+        <h3>Leaves a trail an auditor can follow</h3>
+        <p>Append-only activity, per-field. Who suggested, who accepted, when, and what the record said before.</p>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:2.5rem">
+      <div class="mock">
+        <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">app.forseti.io/assessments/talentscreen-screening</div></div>
+        <div class="mock-main mock-main--flat">
+          <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:1rem;align-items:start" class="two-col">
+            <div class="panel">
+              <p class="m-eyebrow">Impact assessment · Application screening and ranking</p>
+              <p style="font-size:.8rem;font-weight:500;margin-top:.5rem">Affected groups and potential harms</p>
+              <p style="font-size:.68rem;color:var(--muted);line-height:1.65;margin-top:.5rem">
+                Candidates applying for advertised roles are ranked before a recruiter
+                sees them, so a systematic difference in ranking is a difference in who
+                gets read at all. The vendor reports group fairness at the model level;
+                Meridian has not yet reproduced that on its own applicant pool…
+              </p>
+              <div style="display:flex;gap:.4rem;margin-top:.75rem;align-items:center;flex-wrap:wrap">
+                <span class="badge b-info">AI suggestion</span>
+                <span class="btn btn-primary btn-sm" style="height:1.7rem;padding:0 .6rem;font-size:.65rem">Accept</span>
+                <span class="btn btn-ghost btn-sm" style="height:1.7rem;padding:0 .6rem;font-size:.65rem">Discard</span>
+                <span style="font-size:.58rem;color:var(--muted-2)">nothing is saved until a person accepts</span>
+              </div>
+            </div>
+            <div style="display:grid;gap:.6rem;align-content:start">
+              <div class="panel" style="padding:.75rem .85rem">
+                <p class="m-eyebrow">Sign-off chain</p>
+                <div style="display:grid;gap:.5rem;margin-top:.6rem;font-size:.68rem">
+                  <div style="display:flex;align-items:center;gap:.5rem">
+                    <span class="badge b-ok">Signed</span><span style="color:var(--fg)">Legal</span>
+                    <span style="margin-left:auto;color:var(--muted-2);font-size:.6rem">J. Marek · 14 Aug</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:.5rem">
+                    <span class="badge b-ok">Signed</span><span style="color:var(--fg)">Security</span>
+                    <span style="margin-left:auto;color:var(--muted-2);font-size:.6rem">T. Oyelaran · 15 Aug</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:.5rem">
+                    <span class="badge b-warn">Pending</span><span style="color:var(--fg)">Exec sponsor</span>
+                    <span style="margin-left:auto;color:var(--muted-2);font-size:.6rem">A. Boateng</span>
+                  </div>
+                </div>
+                <p style="font-size:.58rem;color:var(--muted-2);line-height:1.5;margin-top:.65rem;border-top:1px solid var(--border);padding-top:.55rem">
+                  A material edit resets the chain. A typo does not.
+                </p>
+              </div>
+              <div class="panel" style="padding:.75rem .85rem">
+                <p class="m-eyebrow">Activity</p>
+                <div style="display:grid;gap:.4rem;margin-top:.55rem;font-size:.62rem;color:var(--muted)">
+                  <div><span style="color:var(--fg)">R. Andersen</span> accepted an AI suggestion on <em>harms</em> · 13 Aug</div>
+                  <div><span style="color:var(--fg)">A. Boateng</span> changed oversight to <em>decision reviewed</em> · 12 Aug</div>
+                  <div><span style="color:var(--fg)">Forseti</span> marked evidence stale after re-upload · 11 Aug</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="rule"></div></div>
+
+<!-- ============================================================ go to market -->
+<section class="sec" id="gtm">
+  <div class="wrap">
+    <div class="feature">
+      <div class="feature-copy rv">
+        <p class="eyebrow eyebrow--brand">Go to market</p>
+        <h2>Turn the register into the answer a buyer asked for</h2>
+        <p>
+          The questionnaire copilot, the internal and external trust centre and
+          the evidence pack handed over at a certification audit all read the
+          same records. A shared purpose is published only when every system
+          behind it is shareable — so an approved tool can never leak a withheld
+          one.
+        </p>
+        <div class="ticks">
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>Questionnaires answered from the register</b>, with the record cited beside each answer.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>A trust centre with two audiences</b> — what staff see and what customers see, bounded by the data itself.</span></div>
+          <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span><b>An audit pack on demand</b>, assembled from live evidence rather than a folder someone last tidied in March.</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="mock">
+          <div class="mock-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">trust.meridian-analytics.com</div></div>
+          <div class="mock-main mock-main--flat">
+            <div style="display:flex;gap:.4rem;margin-bottom:.85rem">
+              <span class="badge b-info">External view</span>
+              <span class="badge b-neutral">Internal view</span>
+              <span style="margin-left:auto;font-size:.6rem;color:var(--muted-2)">Published 27 Aug 2026</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem" class="hero-stats">
+              <div class="panel" style="padding:.75rem .85rem">
+                <p class="m-eyebrow" style="font-size:.5rem">Standard</p>
+                <p style="font-size:.82rem;font-weight:600;margin-top:.25rem">ISO 42001</p>
+                <p style="font-size:.6rem;color:var(--ok);margin-top:.2rem">Stage 1 booked</p>
+              </div>
+              <div class="panel" style="padding:.75rem .85rem">
+                <p class="m-eyebrow" style="font-size:.5rem">AI systems disclosed</p>
+                <p style="font-size:.82rem;font-weight:600;margin-top:.25rem">11 of 24</p>
+                <p style="font-size:.6rem;color:var(--muted-2);margin-top:.2rem">approved &amp; shareable</p>
+              </div>
+              <div class="panel" style="padding:.75rem .85rem">
+                <p class="m-eyebrow" style="font-size:.5rem">Human oversight</p>
+                <p style="font-size:.82rem;font-weight:600;margin-top:.25rem">Reviewed</p>
+                <p style="font-size:.6rem;color:var(--muted-2);margin-top:.2rem">weakest arrangement shown</p>
+              </div>
+            </div>
+            <div class="panel" style="margin-top:.65rem;padding:.75rem .85rem">
+              <p class="m-eyebrow">Questionnaire · Northwind Insurance AI due diligence</p>
+              <p style="font-size:.7rem;color:var(--fg);margin-top:.55rem;font-weight:500">
+                “Do you use AI to make or materially influence decisions about individuals?”
+              </p>
+              <p style="font-size:.66rem;color:var(--muted);line-height:1.65;margin-top:.45rem">
+                Yes, in one case. Applicant ranking is supported by an AI system; a
+                recruiter reviews every ranked shortlist before any candidate is
+                progressed or rejected, and the arrangement is recorded as
+                <em>decision reviewed</em>.
+              </p>
+              <div style="display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap">
+                <span class="badge b-neutral">Use case · Application screening and ranking</span>
+                <span class="badge b-neutral">System · TalentScreen</span>
+                <span class="badge b-neutral">Assessment · v3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== standards -->
+<section class="sec-tight" id="standards">
+  <div class="wrap">
+    <p class="eyebrow rv" style="text-align:center;margin-bottom:1.5rem">Built for the standard buyers and regulators are asking about</p>
+    <div class="strip rv">
+      <div><p class="k">ISO/IEC 42001</p><p class="v">AI management system</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== demo steps -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow eyebrow--brand">What a demo looks like</p>
+      <h2>Thirty minutes, and you leave with a list</h2>
+      <p class="lede">No slides. We open the product on a demo tenant, then put your own tools into it and see what the register says.</p>
+    </div>
+    <div class="steps rv" style="margin-top:3rem">
+      <div class="step">
+        <h3>Your stack, in the register</h3>
+        <p>Name the AI tools you already know about. We register them live — origin, owner, purpose — and you see the inventory take shape in a few minutes.</p>
+      </div>
+      <div class="step">
+        <h3>The gap, honestly</h3>
+        <p>Readiness against ISO 42001 computed on the spot, with the strict number rather than the flattering one, and the reasons underneath it.</p>
+      </div>
+      <div class="step">
+        <h3>A written next step</h3>
+        <p>You leave with the shortlist: which systems need an assessment, which controls have no evidence, and what a certifiable posture would take.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ final CTA -->
+<section class="sec" id="demo" style="padding-top:1rem">
+  <div class="wrap">
+    <div class="cta rv">
+      <div class="cta-inner">
+        <div>
+          <p class="eyebrow eyebrow--brand">Book a demo</p>
+          <h2 style="margin-top:.9rem">Start with the list.<br />Everything else follows from it.</h2>
+          <p class="lede" style="margin-top:1.2rem;max-width:38ch">
+            Tell us roughly what you run and who is asking you about it. We will
+            bring a tenant set up to look like your organisation.
+          </p>
+          <div class="ticks" style="margin-top:2rem">
+            <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>30 minutes, product on the screen</span></div>
+            <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>Your own AI tools, registered live</span></div>
+            <div class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>A written gap list afterwards, yours to keep</span></div>
+          </div>
+        </div>
+
+        <!-- Inert on purpose: this is a mockup, the form posts nowhere. The
+             submit handler is bound in the script below rather than inline, so
+             a strict CSP that blocks inline handlers cannot turn "does nothing"
+             into "navigates away". -->
+        <form class="form" id="demo-form" novalidate>
+          <div class="row">
+            <div class="field"><label for="fn">First name</label><input id="fn" name="fn" type="text" autocomplete="given-name" /></div>
+            <div class="field"><label for="ln">Last name</label><input id="ln" name="ln" type="text" autocomplete="family-name" /></div>
+          </div>
+          <div class="field"><label for="em">Work email</label><input id="em" name="em" type="email" autocomplete="email" placeholder="you@company.com" /></div>
+          <div class="field"><label for="co">Company</label><input id="co" name="co" type="text" autocomplete="organization" /></div>
+          <div class="row">
+            <div class="field">
+              <label for="sz">Company size</label>
+              <select id="sz" name="sz">
+                <option>1–50</option><option selected>51–250</option>
+                <option>251–1,000</option><option>1,000+</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="dr">What is driving this?</label>
+              <select id="dr" name="dr">
+                <option selected>A customer is asking</option>
+                <option>ISO 42001 certification</option>
+                <option>EU AI Act readiness</option>
+                <option>Shadow AI / internal policy</option>
+                <option>Just looking</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="ms">Anything we should know? (optional)</label><textarea id="ms" name="ms" placeholder="e.g. we think we have about 20 AI tools and no list"></textarea></div>
+          <button class="btn btn-primary" type="submit" style="width:100%;margin-top:.25rem">Book a demo</button>
+          <p class="form-note">
+            We reply within one business day. No newsletter, and nothing is shared
+            with anyone else.
+          </p>
+          <p><span class="mock-flag">Mockup — this form is inert</span></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================== footer -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="foot-brand">
+        <a href="#top" class="brand">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <defs><linearGradient id="lg3" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#818cf8"/><stop offset="1" stop-color="#4f46e5"/>
+            </linearGradient></defs>
+            <path d="M12 2.4 20 5.5v6.4c0 4.6-3.2 8.4-8 9.7-4.8-1.3-8-5.1-8-9.7V5.5l8-3.1Z" fill="url(#lg3)"/>
+          </svg>
+          Forseti
+        </a>
+        <p>The AI management system for organisations that have to prove what their AI does — not just say it.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <span class="h">Platform</span>
+          <a href="#inventory">AI inventory</a>
+          <a href="#inventory">Use cases</a>
+          <a href="#inventory">Intake &amp; triage</a>
+          <a href="#inventory">Statement of Applicability</a>
+          <a href="#gtm">Trust centre</a>
+        </div>
+        <div class="foot-col">
+          <span class="h">Standards</span>
+          <a href="#standards">ISO/IEC 42001</a>
+        </div>
+        <div class="foot-col">
+          <span class="h">Company</span>
+          <a href="#demo">Book a demo</a>
+          <a href="#demo">Contact</a>
+          <a href="#top">Security</a>
+          <a href="#top">Privacy</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Forseti. All rights reserved.</span>
+      <span>Landing page mockup · product visuals built from the demo workspace</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Reveals start at opacity 0 and are cleared by the observer below, so with
+     JS off they would never appear. This puts them straight into their
+     finished state instead. -->
+<noscript><style>.rv{opacity:1;transform:none}.bar>span{width:var(--w)}</style></noscript>
+
+<script>
+/* Reveal on scroll, count-ups, bar fills, sticky-nav border, and the inert
+ * demo form. Reduced motion is honoured in the CSS above; JS-off is handled by
+ * the <noscript> block. */
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Mockup: the form submits nowhere. */
+  var form = document.getElementById("demo-form");
+  if (form) form.addEventListener("submit", function (e) { e.preventDefault(); });
+
+  /* The markup carries the real figures so the page is right with JS off.
+   * With JS on they are zeroed here, before anything paints them, and counted
+   * up when their section is reached. */
+  if (!reduce) {
+    document.querySelectorAll("[data-count]").forEach(function (el) { el.textContent = "0"; });
+  }
+
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  function fillBars(root) {
+    root.querySelectorAll(".bar > span[data-w]").forEach(function (el) {
+      el.style.width = el.getAttribute("data-w") + "%";
+    });
+  }
+
+  function countUp(el) {
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    if (isNaN(target)) return;
+    if (reduce) { el.textContent = String(target); return; }
+    var start = null, dur = 1100;
+    function step(ts) {
+      if (start === null) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var seen = new WeakSet();
+  function activate(el) {
+    if (seen.has(el)) return;
+    seen.add(el);
+    el.classList.add("in");
+    fillBars(el);
+    el.querySelectorAll("[data-count]").forEach(countUp);
+  }
+
+  var targets = document.querySelectorAll(".rv");
+  if (!("IntersectionObserver" in window)) {
+    targets.forEach(activate);
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { activate(e.target); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -12% 0px", threshold: 0.15 });
+  targets.forEach(function (el) { io.observe(el); });
+})();
+</script>
+
+<style>
+/* Narrow-screen fixes for the two mock layouts that use inline grids. */
+@media(max-width:720px){
+  .hero-grid{grid-template-columns:1fr!important}
+  .hero-stats{grid-template-columns:repeat(2,1fr)!important}
+  .two-col{grid-template-columns:1fr!important}
+}
+</style>
+</body>
+</html>

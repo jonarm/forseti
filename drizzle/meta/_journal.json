@@ -1,0 +1,202 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1785465025491,
+      "tag": "0000_free_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785735426208,
+      "tag": "0001_sturdy_reavers",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785738419805,
+      "tag": "0002_third_sharon_ventura",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785813517696,
+      "tag": "0003_boring_proemial_gods",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785817094050,
+      "tag": "0004_serious_madame_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785817094051,
+      "tag": "0005_many_clause_refs",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785830775282,
+      "tag": "0006_little_ultron",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1785883380275,
+      "tag": "0007_lush_epoch",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1785907689162,
+      "tag": "0008_backfill_member_to_contributor",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1785931011485,
+      "tag": "0009_mixed_skin",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786502507769,
+      "tag": "0010_motionless_supreme_intelligence",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1786514813265,
+      "tag": "0011_opposite_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1786538277938,
+      "tag": "0012_backfill_five_governance_roles",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1786538595594,
+      "tag": "0013_audit_trail_append_only",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1786577211277,
+      "tag": "0014_soft_delete_and_versions",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1786577757657,
+      "tag": "0015_review_assignments",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786907916204,
+      "tag": "0016_account_person_mapping",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1786968092163,
+      "tag": "0017_role_grants",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1787212282276,
+      "tag": "0018_finding_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1787213197438,
+      "tag": "0019_evidence_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1787213875233,
+      "tag": "0020_assessment_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1787215549294,
+      "tag": "0021_questionnaire_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1787216713894,
+      "tag": "0022_intake_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1787299752718,
+      "tag": "0023_use_case_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1787436852269,
+      "tag": "0024_use_case_system_join",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1787436952192,
+      "tag": "0025_drop_use_case_system_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1787779073686,
+      "tag": "0026_use_case_system_overrides",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1787798564863,
+      "tag": "0027_intake_notes",
+      "breakpoints": true
+    }
+  ]
+}

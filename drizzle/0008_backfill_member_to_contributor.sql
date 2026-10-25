@@ -1,0 +1,12 @@
+-- Better Auth's default role is `member`, and until permissions existed it meant
+-- "can do everything" — nothing was enforced, so any member could reword or
+-- delete a control. Under the new model that maps to `contributor`: they keep
+-- answering controls and attaching evidence, and lose the ability to redefine
+-- what a control says.
+--
+-- Backfilled rather than left to `normaliseRole()` alone so the stored data says
+-- what the app means. The normaliser stays as a safety net for a row written by
+-- an older client, but the column should not quietly disagree with the model.
+--
+-- `owner` and `admin` are untouched: they already mean what they say.
+UPDATE "member" SET "role" = 'contributor' WHERE "role" = 'member';
