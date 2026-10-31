@@ -1,5 +1,7 @@
 "use client";
 
+import { PreviewNotice } from "@/components/preview-notice";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -255,6 +257,13 @@ export function AssessmentRenderer({ assessment }: { assessment: AssessmentInsta
           </div>
         </div>
       </header>
+
+      <div className="px-6 py-3">
+        <PreviewNotice>
+          Manual answer edits, reviewer simulation and sign-off on this screen are not saved.
+          Reloading restores stored values. Accepting a draft suggestion is a separate saved action.
+        </PreviewNotice>
+      </div>
 
       <div className="flex min-h-0 flex-1">
         {/* ------------------------------------------------- the section rail */}

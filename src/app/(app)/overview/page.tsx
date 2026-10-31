@@ -11,7 +11,7 @@ import {
   readinessByNode,
   systemPosture,
 } from "@/lib/ams/readiness";
-import { ORIGIN, RISK_TIER, TODAY, formatDate } from "@/lib/ams/labels";
+import { ORIGIN, RISK_TIER, utcToday, formatDate } from "@/lib/ams/labels";
 import { coverageTone, TONE_FILL, TONE_TEXT, TONE_TRACK, type Tone } from "@/lib/ams/tone";
 import { amsPage } from "@/lib/ams-page";
 import { EmptyState } from "../_ams/empty-state";
@@ -59,7 +59,7 @@ export default async function ReadinessDashboard() {
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-8">
       <header className="space-y-1">
         <p className="font-mono text-[0.62rem] uppercase tracking-[0.11em] text-muted-foreground">
-          Readiness · {formatDate(TODAY)}
+          Readiness · {formatDate(utcToday())}
         </p>
         <h1 className="text-xl font-semibold tracking-tight">{ws.framework.shortName}</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
@@ -567,7 +567,7 @@ function NothingInScope() {
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-8">
       <header className="space-y-1">
         <p className="font-mono text-[0.62rem] uppercase tracking-[0.11em] text-muted-foreground">
-          Readiness · {formatDate(TODAY)}
+          Readiness · {formatDate(utcToday())}
         </p>
         <h1 className="text-xl font-semibold tracking-tight">No standard in scope</h1>
       </header>

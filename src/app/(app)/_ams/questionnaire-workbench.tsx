@@ -20,7 +20,7 @@ import {
   REQUESTER_TYPE,
 } from "@/lib/ams/fixtures/questionnaires";
 import { confidenceBand } from "@/lib/ams/fixtures/ai";
-import { formatDate, isOverdue, TODAY } from "@/lib/ams/labels";
+import { formatDate, isOverdue, utcToday } from "@/lib/ams/labels";
 import type { DraftedAnswer, Questionnaire, QuestionnaireQuestion } from "@/lib/ams/types";
 import { StatusBadge } from "./status-badge";
 import { refusalNote } from "@/lib/permissions";
@@ -436,7 +436,7 @@ function QuestionCard({
               <>
                 <Button
                   size="xs"
-                  onClick={() => onPatch({ decision: "edited", editing: false, decidedAt: TODAY })}
+                  onClick={() => onPatch({ decision: "edited", editing: false, decidedAt: utcToday() })}
                 >
                   <Check aria-hidden />
                   Save and use
@@ -454,7 +454,7 @@ function QuestionCard({
                 {draft.text !== null && (
                   <Button
                     size="xs"
-                    onClick={() => onPatch({ decision: "accepted", decidedAt: TODAY })}
+                    onClick={() => onPatch({ decision: "accepted", decidedAt: utcToday() })}
                   >
                     <Check aria-hidden />
                     Use this answer
@@ -467,7 +467,7 @@ function QuestionCard({
                 <Button
                   size="xs"
                   variant="ghost"
-                  onClick={() => onPatch({ decision: "rejected", decidedAt: TODAY })}
+                  onClick={() => onPatch({ decision: "rejected", decidedAt: utcToday() })}
                 >
                   <X aria-hidden />
                   Reject

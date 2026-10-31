@@ -1,5 +1,7 @@
 "use client";
 
+import { PreviewNotice } from "@/components/preview-notice";
+
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowLeft, Check, Lock, Loader2 } from "lucide-react";
@@ -22,7 +24,7 @@ import {
   canClose,
   findingAge,
 } from "@/lib/ams/fixtures/registers";
-import { formatDate, isOverdue, TODAY } from "@/lib/ams/labels";
+import { formatDate, isOverdue, utcToday } from "@/lib/ams/labels";
 import type { Finding } from "@/lib/ams/types";
 import { ActivityPanel } from "./activity-panel";
 import { Ref, StatusBadge } from "./status-badge";
@@ -77,14 +79,14 @@ export function FindingRecord({ finding: initial }: { finding: Finding }) {
     window.setTimeout(() => {
       setFinding((f) => ({
         ...f,
-        verifiedAt: TODAY,
+        verifiedAt: utcToday(),
         status: f.status === "closed" ? f.status : "verification",
       }));
       log.record(
         "recorded verification",
         "Verified by",
         "Nobody",
-        `${personById(finding.verifiedById ?? "").name} · ${formatDate(TODAY)}`,
+        `${personById(finding.verifiedById ?? "").name} · ${formatDate(utcToday())}`,
       );
       setBusy(null);
     }, 800);
@@ -93,7 +95,7 @@ export function FindingRecord({ finding: initial }: { finding: Finding }) {
   function close() {
     setBusy("close");
     window.setTimeout(() => {
-      setFinding((f) => ({ ...f, status: "closed", closedAt: TODAY }));
+      setFinding((f) => ({ ...f, status: "closed", closedAt: utcToday() }));
       log.record(
         "closed the finding",
         "Status",
@@ -166,6 +168,10 @@ export function FindingRecord({ finding: initial }: { finding: Finding }) {
 
       {/* --------------------------------------------------------- the lifecycle */}
       <section className="space-y-4 rounded-lg border border-border bg-secondary/20 p-4">
+        <PreviewNotice>
+          Root cause, corrective action, verification and closure edits are not saved.
+          Reloading restores the stored finding. Record creation and filing are separate saved actions.
+        </PreviewNotice>
         <Stage
           n={1}
           title="Root cause"

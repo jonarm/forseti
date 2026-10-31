@@ -1,5 +1,7 @@
 "use client";
 
+import { PreviewNotice } from "@/components/preview-notice";
+
 import Link from "next/link";
 import { useState } from "react";
 import { AlertTriangle, ArrowLeft, Check, Download, FileText, Loader2, X } from "lucide-react";
@@ -7,7 +9,7 @@ import { AlertTriangle, ArrowLeft, Check, Download, FileText, Loader2, X } from 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { evidenceDependants } from "@/lib/ams/readiness";
-import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, TODAY } from "@/lib/ams/labels";
+import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, utcToday } from "@/lib/ams/labels";
 import type { Evidence } from "@/lib/ams/types";
 import { EmptyState } from "./empty-state";
 import { ActivityPanel } from "./activity-panel";
@@ -43,7 +45,7 @@ export function EvidenceRecord({ evidence }: { evidence: Evidence }) {
   const lapsed = Boolean(evidence.expiresAt && isOverdue(evidence.expiresAt));
   const daysLeft = evidence.expiresAt
     ? Math.round(
-        (new Date(evidence.expiresAt).getTime() - new Date(TODAY).getTime()) / 86_400_000,
+        (new Date(evidence.expiresAt).getTime() - new Date(utcToday()).getTime()) / 86_400_000,
       )
     : null;
 
@@ -51,7 +53,7 @@ export function EvidenceRecord({ evidence }: { evidence: Evidence }) {
     setBusy(kind);
     window.setTimeout(() => {
       setState(next);
-      setDecidedAt(TODAY);
+      setDecidedAt(utcToday());
       setBusy(null);
       log.record(
         next === "verified" ? "verified the document" : "rejected the document",
@@ -138,6 +140,10 @@ export function EvidenceRecord({ evidence }: { evidence: Evidence }) {
 
       {/* ------------------------------------------------------ verification */}
       <section className="space-y-2 rounded-lg border border-border bg-secondary/20 p-4">
+        <PreviewNotice>
+          Verify and reject only change this preview. No verification decision is saved,
+          and these buttons do not change framework readiness.
+        </PreviewNotice>
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-medium">Verification</h2>
           <StatusBadge
@@ -178,7 +184,7 @@ export function EvidenceRecord({ evidence }: { evidence: Evidence }) {
                 Reject
               </Button>
               <p className="text-xs text-muted-foreground">
-                Recorded against {personById("p-anders").name}, with a timestamp.
+                Preview only; no verification record is saved.
               </p>
             </div>
           </>

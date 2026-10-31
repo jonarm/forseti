@@ -1,75 +1,51 @@
-# Testing
+# Development and testing
 
-```bash
-npm test           # vitest, runs offline — no container needed
-npm run test:watch
+Use Node.js 24 and the committed npm lockfile. A hosted shell is sufficient; a
+local installation on the maintainer's computer is not required.
+
+```sh
+npm ci
+npm run lint
+npx tsc --noEmit --incremental false
+npm test -- --maxWorkers=2
+npm run build
 ```
 
-## What the suites pin, and why those things
+`npm test` uses Vitest. Database-backed suites run PostgreSQL compiled to WASM
+(PGlite) in process, applying the real `drizzle/` migrations to disposable
+in-memory databases. They do not read a live Neon URL or require Docker. They
+insert/delete synthetic test records inside those instances and free them afterward.
+Do not substitute a shared/application database for the test harness.
 
-Tests cover the things that fail silently:
+Coverage includes tenant isolation, role enforcement and permission-read errors,
+route guards, audit behavior, import/export, record lifecycles, document hardening,
+reference-only initialization, current dates, assessment oversight defaults,
+instance-specific auth origins, and sign-in return-path normalization.
 
-- **Tenant isolation** in `ai-store.test.ts` — the security property the whole
-  multi-tenant iteration rests on. Every accessor gets a positive test and a
-  cross-tenant negative one, plus a forged link dropped rather than written.
-- **The prompt-injection defence** in `sanitize.test.ts` — that
-  `asUntrustedBlock()` defangs its own delimiter, so a paste cannot close the
-  block early and be read as an instruction.
-- **The rate limiter's** window and fail-open behaviour.
-- **The 401-vs-403 split** in `session.test.ts`.
-- **The role matrix** in `permissions.test.ts`, and that every writing route is
-  actually reached by it in `route-guards.test.ts`.
-- **The upload pipeline's hardening** in `evidence/hardening.test.ts` — sniffing
-  by bytes rather than by name, and the zip-bomb guard.
-- **Migration ordering** in `migrations.test.ts` — `_journal.json` must ascend by
-  `when`, or every later migration is silently skipped.
+## Build checks
 
-## PGlite
+A build resolves the whole Next.js route graph and typechecks it; TypeScript
+alone is not equivalent. Stop the dev server before building. Required boot
+variables must be present even for a build. CI uses dummy authentication/database
+settings and a lazy PostgreSQL pool; it does not migrate or connect to a shared
+service. Bundled fonts require no Google Fonts request.
 
-Database tests run on **PGlite** — Postgres compiled to WASM, in-process —
-against the real `drizzle/` migrations, so a missing `WHERE` clause fails the same
-way it would in production. No container, no network, so `npm test` works offline
-and in CI.
+For an isolated build with no application database, use disposable placeholder
+values only in that command's environment, as CI does. Do not save those values
+as a deployment's real configuration.
 
-The harness is `src/test/pglite.ts`. `createTestDb()` applies the migrations from
-`./drizzle` rather than building tables by hand: a fixture that redefined the
-schema would drift from production the first time someone added a column, and the
-tests would keep passing while the app broke. Call `close()` in `afterAll` or each
-suite leaks a WASM instance.
+## Deployment checks
 
-Test files swap the singleton with `vi.mock("@/db")` **before** importing
-`ai-store.ts`, since the factory runs lazily on first import.
+The unit/integration suite does not replace browser testing against a deployed
+instance. Use a separate preview database for write tests. Check sign-in/out,
+OAuth callbacks, organisation creation, role permissions, tenant boundaries,
+persisted edits after refresh, file uploads, and any configured scheduler/Redis.
+Follow the [deployment checklist](deployment.md#deployment-verification).
 
-`ai-store.test.ts` carries the cross-tenant negatives — cross-tenant read,
-cross-tenant delete, a forged link dropped rather than written — plus two
-properties that go further than a `WHERE` clause.
+Anonymous HTTP smoke tests can check page rendering, local redirects, and API
+401s without a real database. They do not demonstrate authenticated operations,
+Neon access, provider callbacks, or full end-to-end functionality.
 
-**The seeded workspace must derive what the design was approved as.** The screens
-were signed off against the fixtures, the seed writes those fixtures to Postgres,
-so every figure derived from a seeded organization has to equal the figure
-derived from `fixtureWorkspace()` directly. Anything the round trip loses — a
-dropped link row, a coerced null, a column that quietly truncates — surfaces
-there as a different number rather than as a screen nobody rechecked. It has
-already earned its place twice: it caught an evidence relation the fixtures
-recorded twice and disagreed about, and a primary key that let the second
-organization to seed take the first one's rows.
-
-**An empty organization must derive without throwing.** The fixtures were never
-empty and a fresh tenant always is, so every division, every absent framework and
-every empty array meets its first zero there. A `NaN%` on a dashboard is the kind
-of defect that ships.
-
-`src/lib/ams/link-parity.test.ts` pins the one relation the fixtures still hold
-twice. It goes when they stop being the seed's source.
-
-## What is not covered
-
-Tests don't cover the UI or the model calls. Verify those by signing in and
-walking the flow: `/overview` → `/inventory` → a system profile →
-`/frameworks` → `/risks` → `/trust-center`.
-
-Nothing renders a React tree against real rows, so a component that crashes on a
-shape only the database produces would pass everything here. The seeded
-organization holds exactly the fixture data, which is why that gap has not bitten
-yet — and exactly why an empty organization is the case to check by hand after
-touching a screen.
+Report the exact commands, pass/fail counts, skipped/unrun checks, and environment.
+A green deployment is build/startup evidence, not proof every feature is tested.
+See the [validation record](validation.md).

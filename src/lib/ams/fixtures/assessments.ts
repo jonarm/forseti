@@ -186,7 +186,9 @@ export function seedAnswers(ws: Workspace, assessment: AssessmentInstance): Answ
   return {
     informs_decisions_about_people: useCase?.informsDecisionsAboutPeople ?? false,
     faces_customers: useCase?.facesCustomers ?? false,
-    oversight_level: useCase?.oversightLevel,
+    oversight_level: useCase
+      ? ws.effectiveOversight(useCase.id, assessment.systemId).level
+      : undefined,
     ...assessment.answers,
   };
 }

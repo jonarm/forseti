@@ -237,8 +237,7 @@ export function AuditPack() {
                 {summary.framework?.name}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Meridian Analytics · prepared {formatDate(summary.preparedOn)} by{" "}
-                {personById("p-anders").name}
+                Organization preview · prepared {formatDate(summary.preparedOn)}
               </p>
               <p className="mt-3 max-w-2xl text-[0.8125rem] leading-relaxed text-muted-foreground">
                 Covering {formatDate(summary.periodFrom)} to{" "}
