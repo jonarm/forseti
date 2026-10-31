@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
-
-const geistSans = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Forseti — AI governance platform",
@@ -29,7 +20,7 @@ export default function RootLayout({
     <html
       lang="en"
       // Dark-only build: the class is fixed rather than toggled.
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full`}
+      className={`dark ${GeistSans.variable} ${GeistMono.variable} h-full`}
     >
       {/*
         The root layout owns only what is universal: fonts, theme, and the

@@ -174,7 +174,7 @@ export async function POST(request: Request) {
       email: cleanEmail,
       name: cleanName,
       emailVerified: false,
-    });
+    }, { method: "email-password" });
     if (!created) throw new Error("createUser returned nothing");
     userId = created.id;
 
