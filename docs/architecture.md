@@ -1,3 +1,8 @@
+> For current public deployment and incomplete-feature boundaries, see
+> [deployment](deployment.md) and [known limitations](known-limitations.md).
+> The database driver selects Neon HTTP or ordinary PostgreSQL; authentication
+> resolves instance-specific origins. Builds never migrate or seed.
+
 # Architecture
 
 Tenancy, auth, the framework registry, and where a number comes from.
@@ -462,9 +467,7 @@ beside it would be a second source for the same facts.
 
 Per-organization spend caps on the routes that cost money. Auth controls *who*
 calls; this controls *how often*. Fails open, since a limiter that takes the app
-down when Redis blips is a worse trade. Nothing calls it today; it is kept
-because the guard is the cheap half and writing it after the bill is the
-expensive one.
+down when Redis blips is a deliberate availability tradeoff. Active draft, import and evidence-upload routes use it; without configured Redis those requests proceed without these limits.
 
 ## Frameworks
 
@@ -531,10 +534,7 @@ pick a status colour inside a component.
 
 ## Prompts and errors
 
-No feature calls a model today. The AI management system's drafting
-affordances are present but disabled — see `_ams/ai-action.tsx` for why they are shown rather
-than hidden. What survives is the plumbing every one of them needed, kept because
-the guard is the cheap half:
+Active drafting routes assemble deterministic suggestions from workspace facts; they do not call a model. The UI and route/suggestion loop exist, while legacy Anthropic plumbing remains separate. See current limitations before treating generated text as model output:
 
 **One description of the organization, shared.** Whatever renders the org for a
 prompt must be written once and reused. Two prompts describing the same tenant

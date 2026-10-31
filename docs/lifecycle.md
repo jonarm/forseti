@@ -1,3 +1,9 @@
+> Historical design review of the original demo snapshot. The public cleanup
+> fixes assessment oversight defaults and current dates, removes automatic
+> migrations/private-domain routing, and labels incomplete workflows. Consult
+> [current limitations](known-limitations.md) and [deployment](deployment.md)
+> for current behaviour; the gap analysis below is not an unqualified current-state claim.
+
 # The AI lifecycle, end to end
 
 What actually happens to an AI system in Forseti, from the moment somebody wants
