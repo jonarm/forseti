@@ -24,7 +24,7 @@
  * could prove on the day.
  */
 import { REQUEST_STATUS, daysWaiting } from "./fixtures/requests";
-import { isOverdue, TODAY } from "./labels";
+import { isOverdue, utcToday } from "./labels";
 import type { ControlApplicability } from "./types";
 import type { Workspace } from "./workspace";
 
@@ -115,7 +115,7 @@ export function evidencePosture(ws: Workspace) {
   /* Sixty days is the window in which a renewal can still be arranged calmly. */
   const soon = ws.evidence.filter((e) => {
     if (!e.expiresAt || isOverdue(e.expiresAt)) return false;
-    const days = (new Date(e.expiresAt).getTime() - new Date(TODAY).getTime()) / 86_400_000;
+    const days = (new Date(e.expiresAt).getTime() - new Date(utcToday()).getTime()) / 86_400_000;
     return days <= 60;
   });
 

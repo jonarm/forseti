@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { APP_ORIGIN } from "./domains";
+const APP_ORIGIN = "https://legacy-app.example.com";
 import {
   configuredBaseURL,
   resolveBaseURL,
@@ -130,7 +130,7 @@ describe("resolveBaseURL", () => {
         BETTER_AUTH_URL: "https://forseti.example.com",
         VERCEL: "1",
         VERCEL_ENV: "production",
-        VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai",
+        VERCEL_PROJECT_PRODUCTION_URL: "marketing.example.com",
       }),
     ).toBe("https://forseti.example.com");
   });
@@ -140,7 +140,7 @@ describe("resolveBaseURL", () => {
       VERCEL: "1",
       VERCEL_ENV: "production",
       BETTER_AUTH_URL: APP_ORIGIN,
-      VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai",
+      VERCEL_PROJECT_PRODUCTION_URL: "marketing.example.com",
     })).toBe(APP_ORIGIN);
   });
 

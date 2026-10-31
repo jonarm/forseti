@@ -15,6 +15,9 @@
  */
 import type { Evidence, EvidenceFileRef, EvidenceType } from "./types";
 
+/** Leave multipart overhead below Vercel's function request-body ceiling. */
+export const MAX_UPLOAD_BATCH_BYTES = 4 * 1024 * 1024;
+
 /** The words a filename uses when it is telling you what kind of document it is. */
 const TYPE_WORDS: Record<string, EvidenceType> = {
   policy: "policy",

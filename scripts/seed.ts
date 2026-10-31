@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 
+import { demoSeedPassword } from "../src/lib/demo-seed-config";
+
 import { and, eq } from "drizzle-orm";
 
 import { db } from "../src/db";
@@ -37,14 +39,11 @@ import { ROLE_LABEL, ROLE_ORDER, type RoleName } from "../src/lib/permissions";
 const ORG_NAME = "Meridian Analytics";
 const ORG_SLUG = "meridian-analytics";
 
-/**
- * The shared password for every demo account.
- *
- * Fine here and nowhere else: this seeds a synthetic organisation on a
- * throwaway database. `auth.ts` sets `minPasswordLength: 12`, so it has to
- * clear that bar rather than being something shorter and more convenient.
- */
-const DEMO_PASSWORD = "forseti-demo-password";
+// Explicit operator consent and a private password are required before main().
+const DEMO_PASSWORD = demoSeedPassword({
+  ALLOW_DEMO_SEED: process.env.ALLOW_DEMO_SEED,
+  DEMO_PASSWORD: process.env.DEMO_PASSWORD,
+});
 
 /**
  * A sign-in for each of the five roles.
@@ -214,7 +213,7 @@ async function main() {
     }
   }
 
-  console.log(`\nDone. Every account uses the password: ${DEMO_PASSWORD}`);
+  console.log("\nDone. Demo accounts use the operator-provided DEMO_PASSWORD; it is not printed.");
   for (const account of ACCOUNTS) {
     console.log(`  ${account.email.padEnd(24)} ${ROLE_LABEL[account.role]}`);
   }

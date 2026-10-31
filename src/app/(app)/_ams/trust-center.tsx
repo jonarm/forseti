@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Building2, Copy, Eye, EyeOff, Link2, Search, Users } from "lucide-react";
+import { Building2, Eye, EyeOff, Link2, Search, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { commitments, houseRules, toolEntries, type Audience } from "@/lib/ams/trust-center";
-import { formatDate, RISK_TIER, TODAY } from "@/lib/ams/labels";
+import { formatDate, RISK_TIER, utcToday } from "@/lib/ams/labels";
 import { TONE_TEXT } from "@/lib/ams/tone";
 import { StatusBadge } from "./status-badge";
 import { useWorkspace } from "@/lib/ams/workspace-context";
@@ -58,7 +58,6 @@ export function TrustCenter() {
   const ws = useWorkspace();
   const [audience, setAudience] = useState<Audience>("internal");
   const [query, setQuery] = useState("");
-  const [copied, setCopied] = useState(false);
 
   const tools = useMemo(() => toolEntries(ws), [ws]);
   const claims = useMemo(() => commitments(ws), [ws]);
@@ -85,7 +84,7 @@ export function TrustCenter() {
             <h1 className="text-xl font-semibold tracking-tight">Trust centre</h1>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
               {external
-                ? "What a customer sees when you send them the link. Same records, fewer of them."
+                ? "Preview of customer-facing content. Public sharing is not implemented."
                 : "What staff need in order to use AI without asking — and what a customer would see if you shared this."}
             </p>
           </div>
@@ -133,13 +132,11 @@ export function TrustCenter() {
             <Button
               size="xs"
               variant="outline"
-              onClick={() => {
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1600);
-              }}
+              disabled
+              title="Public sharing is not implemented; no link is copied."
             >
-              {copied ? <Copy aria-hidden /> : <Link2 aria-hidden />}
-              {copied ? "Link copied" : "Copy share link"}
+              <Link2 aria-hidden />
+              Sharing unavailable
             </Button>
           </div>
         ) : (
@@ -302,7 +299,7 @@ export function TrustCenter() {
               {rules.policy && (
                 <span className="text-[0.8125rem] text-muted-foreground">
                   {rules.policy.title} v{rules.policy.version} · approved{" "}
-                  {formatDate(rules.policy.approvedAt ?? TODAY)}
+                  {formatDate(rules.policy.approvedAt ?? utcToday())}
                 </span>
               )}
               <EyeOff className="ml-auto size-3.5 shrink-0 text-warn" aria-hidden />

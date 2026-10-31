@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { readAiSystem, saveAiEvidence } from "@/lib/ai-store";
-import { evidenceFromUpload, guessEvidenceType } from "@/lib/ams/evidence-upload";
+import { evidenceFromUpload, guessEvidenceType, MAX_UPLOAD_BATCH_BYTES } from "@/lib/ams/evidence-upload";
 import { ingestDocument } from "@/lib/evidence/ingest";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { cleanLine } from "@/lib/sanitize";
@@ -46,7 +46,7 @@ import type { EvidenceType } from "@/lib/ams/types";
 const MAX_FILES = 25;
 
 /** Total across the batch, so twenty-five 4MB files cannot be read at once. */
-const MAX_BATCH_BYTES = 25 * 1024 * 1024;
+const MAX_BATCH_BYTES = MAX_UPLOAD_BATCH_BYTES;
 
 const TYPES: EvidenceType[] = [
   "policy",

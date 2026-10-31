@@ -222,16 +222,11 @@ export function formatDate(iso: string): string {
 }
 
 /** A review date that has passed is the single most common overdue signal. */
-export function isOverdue(iso: string, today = TODAY): boolean {
+export function isOverdue(iso: string, today = utcToday()): boolean {
   return new Date(iso) < new Date(today);
 }
 
-/**
- * The demo's "now".
- *
- * Fixed, not `new Date()`. Every relative date in the fixtures — overdue
- * reviews, expiring evidence, a renewal next month — is written against this
- * date, so pinning it is what stops the demo quietly falling apart three months
- * from now when everything becomes overdue at once.
- */
-export const TODAY = "2026-08-10";
+/** UTC calendar date, evaluated per call rather than pinned to the demo timeline. */
+export function utcToday(now = new Date()): string {
+  return now.toISOString().slice(0, 10);
+}
