@@ -244,10 +244,10 @@ and `uiPermissions(role, grants)`.
 
 **A missing row means the code default, never "holds nothing".** A stored copy of
 the defaults would freeze one build's answer and withhold every statement added
-later; an empty map would refuse everything to everybody. So `readRoleGrants()`
-degrades to `{}` — which is exactly where an organization that never edited
-anything already sits. It is the one read in `ai-store.ts` where the house rule
-of degrading to the empty state would be wrong.
+later. A successful lookup with no overrides returns `{}`, which selects those
+defaults. A failed lookup throws instead: silently returning `{}` would restore
+permissions the tenant removed. Context resolution then fails, and API guards
+return 503 before the requested operation runs.
 
 Three fences, all enforced in the store rather than in the route, because they
 must hold however the row arrives:

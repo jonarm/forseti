@@ -89,39 +89,24 @@ filtering `LANDING_HOST` out of `resolveTrustedOrigins` on the grounds that the
 app is never served there and so can never legitimately originate a request.
 The second is a posture change and belongs in its own commit.
 
-### The sign-in this split broke, and why the code no longer guesses
+### Authentication for independent instances
 
-This shipped and failed in production:
-`ERROR [Better Auth]: Invalid origin: https://demo.theforseti.ai`.
+Authentication does not import the original deployment's `APP_ORIGIN`. Production
+uses `BETTER_AUTH_URL` when configured, then `VERCEL_PROJECT_PRODUCTION_URL`,
+then `VERCEL_URL`. Previews continue to use their own `VERCEL_URL` first. The
+trusted origins come only from this instance's configured URL and Vercel URLs;
+the original application's domain is not automatically trusted.
 
-`resolveBaseURL` fell back to `VERCEL_PROJECT_PRODUCTION_URL`, which is
-`theforseti.ai` — the marketing domain. So `baseURL` was a host that serves one
-static page and forwards everything else, while every sign-in arrived from the
-application host, and Better Auth refused each one. The message names the
-application domain, which is the one part of the arrangement that was right.
+A deployment whose marketing domain differs from its application domain must
+set `BETTER_AUTH_URL` explicitly to the application origin. For the original
+split described above, that is `https://demo.theforseti.ai`. Independent operators
+must use their own application URL. Without this setting, authentication falls
+back to the project's production domain, which may be the marketing host.
 
-The fix is that the code stopped guessing. `deployedAppOrigin` resolves to
-`APP_ORIGIN` from `lib/domains.ts` whenever `VERCEL` is set, ahead of the
-production-domain fallback, and the same value joins `trustedOrigins`. The
-assumption that broke was never written down: before the split, "the project's
-production domain" and "where the app answers" were the same string, and
-`auth-origins.ts` was written on that. They are different hosts now.
-
-It has to be `baseURL` and not only `trustedOrigins`. `/api` is excluded from
-the proxy matcher, so `theforseti.ai/api/auth/callback/<provider>` is *served*
-on the marketing host rather than forwarded: with `baseURL` pointing there, an
-OAuth callback lands on `theforseti.ai` and sets a host-only cookie on it, and
-the redirect afterwards forwards to `demo.theforseti.ai`, where that cookie does
-not exist.
-
-**Setting `BETTER_AUTH_URL=https://demo.theforseti.ai` is still worth doing** —
-it is the explicit path and it wins over the constant. It is no longer load
-bearing, which is the point: an unset variable is now a safety net rather than
-an outage.
-
-If `GOOGLE_*` or `MICROSOFT_*` are set, their redirect URIs are
-`<BETTER_AUTH_URL>/api/auth/callback/<provider>` and have to be re-registered in
-each provider's console against `https://demo.theforseti.ai`.
+OAuth providers must register `<application origin>/api/auth/callback/<provider>`.
+Check email sign-in, OAuth callbacks, and preview sign-in before merging this
+change into a deployed instance. This code change does not update Vercel settings
+or provider registrations automatically.
 
 ## Redis is not optional in production
 

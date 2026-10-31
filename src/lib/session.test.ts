@@ -59,9 +59,7 @@ beforeEach(() => {
   // Nobody matched, which is the ordinary state of a new seat.
   readActingPersonIdMock.mockReset();
   readActingPersonIdMock.mockResolvedValue(null);
-  /* No overrides, which is what an organization that has never edited its roles
-   * has — and, deliberately, what a failed read degrades to. Never a map of
-   * empty roles: that would refuse everything to everybody. */
+  // A successful lookup for an organization that has never edited its roles.
   readRoleGrantsMock.mockReset();
   readRoleGrantsMock.mockResolvedValue({});
 });
@@ -322,6 +320,25 @@ describe("requirePermission", () => {
     const result = await requirePermission({ control: ["update"] });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.response.status).toBe(401);
+  });
+
+  it("returns 503 without a context when permission overrides cannot be loaded", async () => {
+    signedInAs("system_owner");
+    readRoleGrantsMock.mockRejectedValue(new Error("Permission store unavailable"));
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      // Default system_owner grants allow this action; a failed lookup must not.
+      const result = await requirePermission({ system: ["update"] });
+      expect(result.ok).toBe(false);
+      expect(result).not.toHaveProperty("ctx");
+      if (!result.ok) {
+        expect(result.response.status).toBe(503);
+        const body = await result.response.json();
+        expect(body.error).not.toContain("Permission store unavailable");
+      }
+    } finally {
+      log.mockRestore();
+    }
   });
 
   it("refuses an unrecognised role rather than letting it through", async () => {

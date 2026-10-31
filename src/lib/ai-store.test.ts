@@ -2122,11 +2122,10 @@ describe("role grants", () => {
     expect(await readActivityByKind(ORG_A, "organization", 50)).toHaveLength(0);
   });
 
-  it("degrades to the shipped matrix when the database is broken", async () => {
-    // The one read in this file whose empty state is wrong: an empty map would
-    // mean every role holds nothing. No overrides means the code defaults.
+  it("refuses to resolve grants when the database is broken", async () => {
+    // A failed lookup must not restore permissions the tenant removed.
     await testDb.execute("DROP TABLE ai_role_grant CASCADE");
-    expect(await readRoleGrants(ORG_A)).toEqual({});
+    await expect(readRoleGrants(ORG_A)).rejects.toThrow();
   });
 });
 
