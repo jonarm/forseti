@@ -16,8 +16,6 @@
  * the one part of the arrangement that is right.
  */
 
-import { APP_ORIGIN } from "./domains";
-
 /** `example.com` -> `https://example.com`. Vercel supplies hosts, not URLs. */
 function asOrigin(host: string | undefined): string | undefined {
   return host ? `https://${host}` : undefined;
@@ -56,28 +54,6 @@ export function configuredBaseURL(env: DeploymentEnv): string | undefined {
 }
 
 /**
- * The application's own origin, once deployed.
- *
- * This exists because splitting the deployment across two domains invalidated
- * an assumption the rest of this file was written on.
- * `VERCEL_PROJECT_PRODUCTION_URL` used to be a sound guess at where the app
- * answers — it was the only place it did. It is now the *marketing* domain,
- * which serves one static page and forwards everything else. Resolving
- * `baseURL` to it produced exactly the failure this file's own header warns
- * about, in production, on the live site:
- * `Invalid origin: https://demo.theforseti.ai` — naming the application
- * domain, the one part of the arrangement that was right.
- *
- * Gated on `VERCEL` so a local run still resolves to nothing and lets
- * better-auth default to localhost. A developer's machine is not this
- * deployment, and claiming otherwise would break local sign-in to fix a
- * production bug.
- */
-function deployedAppOrigin(env: DeploymentEnv): string | undefined {
-  return env.VERCEL ? APP_ORIGIN : undefined;
-}
-
-/**
  * Where this deployment lives.
  *
  * Without it Better Auth infers the origin from the incoming request, which
@@ -90,6 +66,8 @@ function deployedAppOrigin(env: DeploymentEnv): string | undefined {
  * made `auth.ts` contradict the comment in `.env.example` promising a fallback
  * to `VERCEL_URL` that the code never reached.
  *
+ * Each instance uses its own deployment configuration. A split marketing/app
+ * deployment must set BETTER_AUTH_URL to the application origin explicitly.
  * Returns `undefined` locally, where Better Auth defaults to localhost:3000.
  */
 export function resolveBaseURL(env: DeploymentEnv): string | undefined {
@@ -99,7 +77,6 @@ export function resolveBaseURL(env: DeploymentEnv): string | undefined {
 
   return (
     configuredBaseURL(env) ??
-    deployedAppOrigin(env) ??
     asOrigin(env.VERCEL_PROJECT_PRODUCTION_URL) ??
     asOrigin(env.VERCEL_URL)
   );
@@ -121,7 +98,6 @@ export function resolveBaseURL(env: DeploymentEnv): string | undefined {
 export function resolveTrustedOrigins(env: DeploymentEnv): string[] {
   const origins = [
     configuredBaseURL(env),
-    deployedAppOrigin(env),
     asOrigin(env.VERCEL_PROJECT_PRODUCTION_URL),
     asOrigin(env.VERCEL_URL),
     asOrigin(env.VERCEL_BRANCH_URL),

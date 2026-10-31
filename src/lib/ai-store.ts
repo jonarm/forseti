@@ -101,9 +101,9 @@ import {
  * rather than a data leak, and it is the reason the negative tests in
  * `ai-store.test.ts` can prove the WHERE clause is really there.
  *
- * **Reads never throw.** Every page calls one during render, so an escaping
- * error would 500 the whole app rather than showing an empty table. They log and
- * return the empty value.
+ * Register reads log failures and return an empty value. Permission reads are
+ * the exception: `readRoleGrants` must throw so a failed lookup cannot restore
+ * permissions a tenant has removed.
  *
  * One consequence of the mockup's design is worth stating here, because it
  * removes a whole class of the invalidation problem `store.ts` wrestles with:
@@ -3751,38 +3751,29 @@ export async function savePerson(
 /**
  * What the roles mean in this organization.
  *
- * **The one read in this file whose empty state is wrong.** Every other accessor
- * degrades to `[]`, because a missing register costs a screen. An empty *grants*
- * map would mean every role holds nothing — the governance lead locked out of
- * the control library because Postgres blipped — so this degrades to the shipped
- * matrix instead, by returning no overrides at all. `can()` reads an absent
- * override as "use the code default", so a failed read lands exactly where an
- * untouched organization already is.
+ * An empty result means the tenant uses the default matrix. A failed query must
+ * propagate instead: returning no overrides after a failure would restore any
+ * default permissions the tenant explicitly removed. API guards turn that
+ * failure into a 503 before the requested operation can run.
  *
  * Rows naming a role or resource this build does not recognise are dropped
  * rather than trusted. A row written by an older client, or by hand, must not be
  * able to grant something the vocabulary no longer defines.
  */
 export async function readRoleGrants(organizationId: string): Promise<OrgGrants> {
-  try {
-    const rows = await db
-      .select()
-      .from(aiRoleGrant)
-      .where(eq(aiRoleGrant.organizationId, organizationId));
+  const rows = await db
+    .select()
+    .from(aiRoleGrant)
+    .where(eq(aiRoleGrant.organizationId, organizationId));
 
-    const grants: OrgGrants = {};
-    for (const row of rows) {
-      const role = row.role as RoleName;
-      if (!ROLE_ORDER.includes(role) || role === FIXED_ROLE) continue;
-      if (!EDITABLE_RESOURCES.includes(row.resource)) continue;
-      grants[role] = { ...(grants[role] ?? {}), [row.resource]: row.actions };
-    }
-    return grants;
-  } catch (err) {
-    console.error("[ai-store] role grant read failed", err);
-    // Deliberately not `{}`-with-empty-roles: see the comment above.
-    return {};
+  const grants: OrgGrants = {};
+  for (const row of rows) {
+    const role = row.role as RoleName;
+    if (!ROLE_ORDER.includes(role) || role === FIXED_ROLE) continue;
+    if (!EDITABLE_RESOURCES.includes(row.resource)) continue;
+    grants[role] = { ...(grants[role] ?? {}), [row.resource]: row.actions };
   }
+  return grants;
 }
 
 /**

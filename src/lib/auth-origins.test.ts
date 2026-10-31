@@ -103,28 +103,28 @@ describe("resolveBaseURL", () => {
     ).toBe("https://forseti.example.com");
   });
 
-  it("falls back to the application's own origin, not the project's production domain", () => {
-    /*
-     * This used to expect the production domain, and that was right while the
-     * production domain was the only place the app answered. It is the
-     * *marketing* domain now — it serves one static page and forwards the rest —
-     * so guessing it resolved `baseURL` to a host that never renders the app.
-     * That shipped, and refused every sign-in in production with
-     * `Invalid origin: https://demo.theforseti.ai`.
-     */
+  it("falls back to this instance's production domain", () => {
     expect(
       resolveBaseURL({
         VERCEL: "1",
         VERCEL_ENV: "production",
         VERCEL_URL: "forseti-abc123.vercel.app",
-        VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai",
+        VERCEL_PROJECT_PRODUCTION_URL: "independent.example.com",
       }),
-    ).toBe(APP_ORIGIN);
+    ).toBe("https://independent.example.com");
+  });
+
+  it("uses this deployment's URL when no production domain is available", () => {
+    expect(resolveBaseURL({ VERCEL: "1", VERCEL_URL: "independent.vercel.app" }))
+      .toBe("https://independent.vercel.app");
+  });
+
+  it("does not invent an origin when deployment URLs are missing", () => {
+    expect(resolveBaseURL({ VERCEL: "1" })).toBeUndefined();
   });
 
   it("still lets an explicitly configured URL win over it", () => {
-    // The escape hatch stays an escape hatch: the constant is a safety net for
-    // an unset variable, not an override of a deliberate one.
+    // A split marketing/application deployment must explicitly name its app.
     expect(
       resolveBaseURL({
         BETTER_AUTH_URL: "https://forseti.example.com",
@@ -133,6 +133,15 @@ describe("resolveBaseURL", () => {
         VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai",
       }),
     ).toBe("https://forseti.example.com");
+  });
+
+  it("keeps the original split deployment working with an explicit application URL", () => {
+    expect(resolveBaseURL({
+      VERCEL: "1",
+      VERCEL_ENV: "production",
+      BETTER_AUTH_URL: APP_ORIGIN,
+      VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai",
+    })).toBe(APP_ORIGIN);
   });
 
   it("still leaves a preview resolving to itself", () => {
@@ -164,11 +173,25 @@ describe("resolveTrustedOrigins", () => {
     expect(origins.filter((o) => o === "https://forseti.vercel.app")).toHaveLength(1);
   });
 
-  it("always trusts the origin the application is actually served from", () => {
-    // Without this the deployment refuses its own sign-in form.
-    expect(
-      resolveTrustedOrigins({ VERCEL: "1", VERCEL_PROJECT_PRODUCTION_URL: "theforseti.ai" }),
-    ).toContain(APP_ORIGIN);
+  it("trusts only this instance's configured and Vercel origins", () => {
+    const env = {
+      VERCEL: "1",
+      BETTER_AUTH_URL: "https://app.example.com",
+      VERCEL_PROJECT_PRODUCTION_URL: "independent.vercel.app",
+      VERCEL_URL: "independent-abc123.vercel.app",
+      VERCEL_BRANCH_URL: "independent-git-main.vercel.app",
+    };
+    expect(resolveTrustedOrigins(env)).toEqual([
+      env.BETTER_AUTH_URL,
+      `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`,
+      `https://${env.VERCEL_URL}`,
+      `https://${env.VERCEL_BRANCH_URL}`,
+    ]);
+    expect(resolveTrustedOrigins(env)).not.toContain(APP_ORIGIN);
+  });
+
+  it("does not automatically trust the original owner's domain on previews", () => {
+    expect(resolveTrustedOrigins(BROKEN_PREVIEW)).not.toContain(APP_ORIGIN);
   });
 
   it("trusts nothing extra when it is not a deployment", () => {

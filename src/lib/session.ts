@@ -49,9 +49,9 @@ export interface OrgContext {
    *
    * Resolved here rather than read wherever a check happens, so there is one
    * answer per request and no screen can render the shipped matrix for a tenant
-   * that has edited it. An absent entry means the code default — and a failed
-   * read produces an empty object, which lands in exactly the same place. It is
-   * never "this role holds nothing".
+   * that has edited it. An absent entry after a successful read means the code
+   * default. A failed read aborts context resolution rather than restoring
+   * permissions that the tenant may have removed.
    */
   grants: OrgGrants;
 }
