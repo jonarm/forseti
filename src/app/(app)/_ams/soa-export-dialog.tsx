@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { APPLICABILITY as APPLICABILITY_LABEL, IMPLEMENTATION, formatDate, TODAY } from "@/lib/ams/labels";
+import { APPLICABILITY as APPLICABILITY_LABEL, IMPLEMENTATION, formatDate, utcToday } from "@/lib/ams/labels";
 import type { ControlApplicability } from "@/lib/ams/types";
 import { useWorkspace } from "@/lib/ams/workspace-context";
 
@@ -41,7 +41,7 @@ export function SoaExportDialog({
   rows: ControlApplicability[];
   counts: { applicable: number; excluded: number; na: number; implemented: number };
 }) {
-  const { personById, framework } = useWorkspace();
+  const { framework } = useWorkspace();
   const [generating, setGenerating] = useState(false);
 
   const excluded = rows.filter((r) => r.applicability !== "yes");
@@ -83,8 +83,7 @@ export function SoaExportDialog({
               </p>
               <h2 className="text-lg font-semibold tracking-tight">{framework?.name}</h2>
               <p className="text-sm text-muted-foreground">
-                Meridian Analytics · prepared {formatDate(TODAY)} · owner{" "}
-                {personById("p-anders").name}
+                Organization preview · prepared {formatDate(utcToday())}
               </p>
               <p className="max-w-2xl pt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">
                 Scope: every AI system used by the organisation, whether procured,

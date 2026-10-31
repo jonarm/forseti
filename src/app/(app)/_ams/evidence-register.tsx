@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { evidenceDependants, isUsableEvidence } from "@/lib/ams/readiness";
-import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, TODAY } from "@/lib/ams/labels";
+import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, utcToday } from "@/lib/ams/labels";
 import type { Evidence, EvidenceType } from "@/lib/ams/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RECORD_KINDS } from "@/lib/ams/record-kinds";
@@ -66,7 +66,7 @@ const LENSES: Record<
     match: (_ws, doc) => {
       if (!doc.expiresAt || isOverdue(doc.expiresAt)) return false;
       const days =
-        (new Date(doc.expiresAt).getTime() - new Date(TODAY).getTime()) / 86_400_000;
+        (new Date(doc.expiresAt).getTime() - new Date(utcToday()).getTime()) / 86_400_000;
       return days <= 60;
     },
   },

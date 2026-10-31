@@ -16,7 +16,7 @@
  * are invisible if the file only carries the date and expects the reader to
  * compare it to today in their head.
  */
-import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, TODAY } from "./labels";
+import { EVIDENCE_TYPE, VERIFICATION, formatDate, isOverdue, utcToday } from "./labels";
 import type { ExportColumn } from "./export-format";
 import type { Evidence } from "./types";
 
@@ -24,7 +24,7 @@ import type { Evidence } from "./types";
 function daysToExpiry(evidence: Evidence): number | null {
   if (!evidence.expiresAt) return null;
   return Math.round(
-    (new Date(evidence.expiresAt).getTime() - new Date(TODAY).getTime()) / 86_400_000,
+    (new Date(evidence.expiresAt).getTime() - new Date(utcToday()).getTime()) / 86_400_000,
   );
 }
 

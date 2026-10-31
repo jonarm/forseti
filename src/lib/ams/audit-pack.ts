@@ -21,7 +21,7 @@
  */
 import { canClose, riskScore } from "./fixtures/registers";
 import { hasUsableEvidence, isUsableEvidence, frameworkReadiness } from "./readiness";
-import { TODAY } from "./labels";
+import { utcToday } from "./labels";
 import type { Workspace } from "./workspace";
 
 /* ------------------------------------------------------------- composition */
@@ -316,10 +316,10 @@ export function packSummary(ws: Workspace, selected: Set<string>) {
 
   return {
     framework: ws.framework,
-    preparedOn: TODAY,
+    preparedOn: utcToday(),
     /* A pack covers a period; a certification audit asks what changed in it. */
     periodFrom: "2025-08-11",
-    periodTo: TODAY,
+    periodTo: utcToday(),
     sections,
     pages: sections.reduce((n, s) => n + s.pages, 0),
     rows: sections.reduce((n, s) => n + s.rows, 0),

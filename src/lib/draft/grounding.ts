@@ -1,4 +1,4 @@
-import { APPLICABILITY, EVIDENCE_TYPE, formatDate, isOverdue, TODAY } from "../ams/labels";
+import { APPLICABILITY, EVIDENCE_TYPE, formatDate, isOverdue } from "../ams/labels";
 import type { Workspace } from "../ams/workspace";
 import type {
   Applicability,
@@ -290,5 +290,5 @@ export function caveatsFor(support: ControlSupport): string[] {
 
 /** Today, in the format every stored timestamp in this codebase uses. */
 export function nowIso(): string {
-  return new Date(`${TODAY}T12:00:00Z`).toISOString();
+  return new Date().toISOString();
 }

@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 
 /**
@@ -61,11 +62,7 @@ export function requireCronRequest(
  * which a caller who can send requests can measure anyway.
  */
 function timingSafeEquals(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-
-  let differences = 0;
-  for (let i = 0; i < a.length; i++) {
-    differences |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return differences === 0;
+  const offered = Buffer.from(a);
+  const expected = Buffer.from(b);
+  return offered.length === expected.length && timingSafeEqual(offered, expected);
 }

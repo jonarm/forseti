@@ -366,13 +366,13 @@ export const DECISIONS = [
   {
     id: "endorse",
     label: "Endorse",
-    blurb: "Approved to proceed. An impact assessment is created and assigned to the owner.",
+    blurb: "Decision recorded. Register the system and create its impact assessment separately.",
     tone: "ok" as const,
   },
   {
     id: "note",
     label: "Note",
-    blurb: "Recorded without a forum decision. Registered in the inventory and scheduled for review.",
+    blurb: "Decision recorded without a forum decision. Inventory registration and review scheduling remain separate steps.",
     tone: "info" as const,
   },
   {

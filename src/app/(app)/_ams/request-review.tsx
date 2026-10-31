@@ -460,7 +460,7 @@ export function RequestReview({ requestId }: { requestId: string }) {
 
             <div className="flex items-center gap-2 pt-1">
               <p className="text-xs text-muted-foreground">
-                Recorded against {personById("p-anders").name}, with a timestamp.
+                Recorded against your signed-in account, with a timestamp.
               </p>
               <Button
                 size="sm"

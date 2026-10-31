@@ -31,28 +31,12 @@ Manual UI verification flow: `/overview` → `/inventory` → system profile →
 
 ## Deploying & Migrations
 
-**Vercel deploys code, never schema.** It runs one build command and stops.
-Pushing a migration file changes nothing in Neon by itself — which is how five
-migrations once sat unapplied while the code needing them shipped, leaving
-routes that would 500 on the first request to a column that did not exist.
-
-* **A production deploy migrates itself.** `vercel-build` runs
-  `scripts/deploy-migrate.mjs` and then `next build`. Vercel prefers that script
-  over `build`, so nothing else has to change.
-* **Only production.** `VERCEL_ENV` is `preview` on a branch deploy and previews
-  share this project's single database — migrating from one would apply an
-  unmerged branch's schema to production, from a deploy nobody thinks of as a
-  release. Previews skip and log why.
-* **A failed migration fails the build, deliberately.** Better a red deployment
-  than a green one that 500s on the first click. If a build goes red, read the
-  `[migrate]` output first: it is a schema problem, not a code one.
-* **`npm run build` stays a pure typecheck gate.** It touches no database, so it
-  is still the local verification step before committing.
-* `npm run db:migrate` remains the by-hand path, and needs `DATABASE_URL` on
-  whatever machine runs it — a *local* database is never required, only the
-  connection string. `.env.local` is not needed for deploys at all.
-* Vercel env vars let the **app** reach Neon. They do not make `drizzle-kit`
-  run; that is what the deploy script is for.
+* `build` and `vercel-build` compile only. They must never migrate, seed, initialize reference data or purge records.
+* Database operations require an explicit operator command and verified target. Preserve applied migration files and journal ordering.
+* `reference:init -- --organization <slug>` adds missing framework definitions only to an existing organisation. It never overwrites definitions or adds demo accounts/business data.
+* `seed` is demo-only: require `ALLOW_DEMO_SEED=1` and operator-provided `DEMO_PASSWORD`; never log the password.
+* Preview deployments need their own database/Neon branch. A different Vercel URL does not establish database isolation.
+* Use the existing isolated checkout; do not create worktrees unless requested. See `docs/deployment.md` for the public workflow.
 
 ---
 
