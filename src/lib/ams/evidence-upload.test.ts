@@ -163,6 +163,16 @@ beforeEach(async () => {
 });
 
 describe("filing a document", () => {
+  it("refuses a batch that would exceed the Vercel request budget without storing records", async () => {
+    const files = ["a.txt", "b.txt"].map((name) =>
+      new File([new Uint8Array(2 * 1024 * 1024 + 1)], name, { type: "text/plain" }),
+    );
+    const response = await upload(files);
+    expect(response.status).toBe(400);
+    expect((await response.json()).error).toContain("4MB");
+    expect(await readAiEvidence(ORG_A)).toEqual([]);
+  });
+
   it("stores it with a title, a preview and no copy of the file", async () => {
     const response = await upload(
       [textFile("access-review-q1.txt", "Reviewed all admin accounts on 14 May.")],

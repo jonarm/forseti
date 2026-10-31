@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { EVIDENCE_TYPE } from "@/lib/ams/labels";
-import { guessEvidenceType, titleFromFilename } from "@/lib/ams/evidence-upload";
+import { guessEvidenceType, titleFromFilename, MAX_UPLOAD_BATCH_BYTES } from "@/lib/ams/evidence-upload";
 import type { EvidenceType } from "@/lib/ams/types";
 
 /**
@@ -123,6 +123,10 @@ export function EvidenceUploadDialog({
 
   async function upload() {
     if (busy || files.length === 0) return;
+    if (files.reduce((sum, file) => sum + file.size, 0) > MAX_UPLOAD_BATCH_BYTES) {
+      setFailure("Upload at most 4 MB in one batch. Choose fewer files and try again.");
+      return;
+    }
     setBusy(true);
     setFailure(null);
 
@@ -228,7 +232,7 @@ export function EvidenceUploadDialog({
                 Drop documents, or click to choose them
               </p>
               <p className="text-xs text-muted-foreground">
-                PDF, Word, Excel, CSV or plain text. Up to 25 at a time.
+                PDF, Word, Excel, CSV or plain text. Up to 25 files and 4 MB total per batch.
               </p>
             </div>
           </button>
