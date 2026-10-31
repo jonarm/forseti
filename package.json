@@ -16,6 +16,7 @@
     "db:studio": "drizzle-kit studio",
     "auth:generate": "npx @better-auth/cli@latest generate --config src/lib/auth.ts --output src/db/auth-schema.ts",
     "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "reference:init": "tsx --env-file-if-exists=.env.local scripts/init-reference.ts",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d --wait && npm run db:migrate && npm run seed",
