@@ -1,3 +1,7 @@
+> Historical screen-design notes. See [current limitations](../../../../docs/known-limitations.md)
+> for current persistence boundaries and [deployment](../../../../docs/deployment.md)
+> for supported setup. Some routes and demo assumptions below predate public cleanup.
+
 # The AI management system
 
 The screens of the AI governance product. They began as `/playground`, a
@@ -487,7 +491,7 @@ still the clause — do not add one.
 
 ## State
 
-Reads come from Postgres. **Three areas now persist; the rest do not.**
+Reads come from Postgres. Persistent operations now include systems, use cases, applicability, evidence relationships, intake, risk edits, reviewer assignments and generic record create/import/export/delete/restore routes. The older detailed notes below are retained for context; manual assessment/sign-off, evidence verification and finding lifecycle editing remain previews.
 
 - **The risk record — all of it.** Title, treatment, treatment summary, status,
   owner, re-rating the residual and accepting it all go through `/api/risks`.
