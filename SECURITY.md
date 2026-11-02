@@ -31,7 +31,6 @@ If a credential is exposed, revoke/rotate it through its provider. Removing it
 from the latest source does not remove it from Git history or invalidate it.
 History rewriting and credential rotation require the operator's own coordination.
 
-Run `npm audit` and a maintained secret scanner before releases. See the current
-[validation record](docs/validation.md) and [dependency review](docs/dependency-security.md).
+Run `npm audit` and a maintained secret scanner before releases. See the [testing guide](docs/testing.md) and [dependency review](docs/dependency-security.md).
 Passing tests, a secret scan, or a successful deployment do not prove the absence
 of vulnerabilities. Third-party advisories must be assessed against actual use.

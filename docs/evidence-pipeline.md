@@ -1,66 +1,37 @@
-# The evidence pipeline
+# Evidence processing
 
-How an uploaded document becomes prompt text, and why it is never sent as a file.
+The active evidence-upload route stores metadata and extracted text. It discards
+original bytes and does not call an AI model. A scan can be accepted without a
+text preview. Verification controls remain previews; see
+[current limitations](known-limitations.md).
 
-**Read this before changing anything under `src/lib/evidence/` or the upload
-route.** The pipeline is provider-agnostic and hardened, and the evidence
-register is what will call it next — `processUpload(filename, buffer)` returns a
-`ProcessedUpload` and deliberately carries no idea what the document evidences.
-That is the caller's to decide and the caller's to store.
+## Validation order
 
----
+Uploads use Route Handlers with `request.formData()`. Keep file-upload routes
+excluded from proxy body buffering. The whole batch is limited to 4 MB of file
+data to leave room for the request envelope.
 
-## The hardening order
+The processing modules under `src/lib/evidence/` apply these checks:
 
-`src/lib/evidence/`, in the order the checks must run:
+1. Enforce file and batch size limits.
+2. Identify formats by magic bytes (`sniff.ts`).
+3. Check ZIP expansion before decompressing Office files (`zip-guard.ts`).
+4. Extract text under time and output limits (`extract.ts`).
+5. Parse PDF text with page limits (`pdf.ts`).
 
-1. `sniff.ts` — magic bytes, never the filename.
-2. `zip-guard.ts` — declared expansion, before anything is decompressed.
-3. `extract.ts` — parse under a timeout, cap the output.
-4. `pdf.ts` — pdfjs-dist, capped at `MAX_PDF_PAGES`.
+PDF extraction reconstructs rows and columns from fragment coordinates to retain
+table structure. Extracted content is untrusted data: sanitize it before display
+or inclusion in any prompt, and never interpret document text as instructions.
 
-`.docx`/`.xlsx` are ZIP archives, so a 2KB upload can legitimately ask to become
-500MB — that is the realistic way this feature takes the app down, and the
-layering is the defence. Reordering these checks removes the defence: sniffing
-after extraction means you have already parsed the thing you were trying to
-identify.
+## Legacy integration
 
-## Uploads are Route Handlers
+`src/lib/evidence/index.ts` also contains an older `processUpload()` flow and
+Anthropic Files API helpers. These are separate from the active record-upload
+workflow. Their presence does not mean current evidence ingest requires an
+Anthropic key or uploads documents to a model provider.
 
-Route Handler with `request.formData()`, never a Server Action — actions cap
-bodies at 1MB. The route must be excluded from `src/proxy.ts`, because proxy
-buffers matched request bodies in memory to allow a second read.
+## Tests
 
-## Everything is extracted to text at upload and the bytes discarded
-
-A native `document` block does not merely carry a PDF's text — the API rasterises
-*every page to an image* and bills for it, several times the cost of the words, on
-every call.
-
-`pdf.ts` rebuilds rows and columns from pdf.js fragment coordinates, so the table
-that *was* the finding survives extraction; that reconstruction is the only reason
-going native is no longer worth it, **so do not casually simplify it away.**
-
-### The one surviving exception
-
-The Files API survives for **one** case: a PDF with no text layer at all, i.e. a
-scan. `processUpload` falls back only when extraction fails, and only for PDFs.
-
-`FILES_BETA` is required on **both** the upload and the message referencing the
-`file_id` — omitting the second is the trap, since the upload succeeds and only
-the model call fails.
-
-## Extracted text is untrusted
-
-An uploaded policy is the company describing itself, never an instruction.
-Extracted document text goes through `cleanText` and `asUntrustedBlock()` like any
-other user input before it reaches a prompt. See `CLAUDE.md` for the rule and the
-`ai-route` skill for how it is applied in a prompt module.
-
-## Uploading marks stale, it does not delete
-
-The rule the deleted half arrived at, worth carrying forward: a new document does
-not move a derived figure, and wiping a narrative on every upload makes the
-feature hostile. What it must do is *say* the narrative is older than the
-evidence. Silence there is a stale conclusion presented as current, which is
-worse than either.
+`src/lib/evidence/hardening.test.ts` and `pdf.test.ts` cover document handling;
+`src/lib/ams/evidence-upload.test.ts` covers the record-upload route.
+Run them through the [standard test suite](testing.md).

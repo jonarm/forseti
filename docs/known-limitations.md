@@ -18,7 +18,7 @@ certification or legal conclusion.
 | Lifecycle | Retirement does not consistently remove a system from every readiness/attention calculation. Finding/risk handoffs and some governance relationships still require further work. |
 | Rate limiting | Optional Redis; requests proceed when it is missing or fails. This is not a guaranteed cost cap. |
 | Concurrency | Not every multi-step operation is transactional; Neon's HTTP driver has no interactive transactions. Audit-first operations can record a failed attempted write. |
-| Hosting | Vercel/Neon are the reference target, but no live deployment of the new public repository was configured or validated during this work. Alternative Node/PostgreSQL hosting has not been end-to-end certified. |
+| Hosting | Vercel/Neon are the reference target, alternative Node/PostgreSQL hosting requires deployment-specific validation. |
 
 ## Deliberate safety boundaries
 
@@ -29,8 +29,3 @@ certification or legal conclusion.
 - Date-sensitive calculations use the current UTC calendar date, not the old sample date.
 - Evidence uploads are limited to 4 MB total per batch to leave request-envelope headroom.
 - The retention endpoint refuses to run without a configured bearer secret.
-
-The older lifecycle/design notes are useful historical context, but this file
-is the current feature-boundary summary. Completing persistence, account/people
-bootstrap, and production operations is separate feature work; this cleanup
-does not silently implement or claim those capabilities.

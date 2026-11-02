@@ -1,20 +1,19 @@
-# Forseti documentation
+# Documentation
 
-Start with [deployment](deployment.md), [environment configuration](environment.md),
-and [current limitations](known-limitations.md).
+For a local setup, start with the [quick start](../README.md#quick-start).
+For hosting, follow the [deployment guide](deployment.md).
 
-| Topic | Document |
+| Guide | Contents |
 | --- | --- |
-| Development and tests | [testing.md](testing.md) |
-| Tenant boundary, auth, data flow | [architecture.md](architecture.md) |
-| Evidence extraction and hardening | [evidence-pipeline.md](evidence-pipeline.md) |
-| Validation actually performed | [validation.md](validation.md) |
-| Dependency advisory assessment | [dependency-security.md](dependency-security.md) |
-| Contribution and security policy | [CONTRIBUTING.md](../CONTRIBUTING.md), [SECURITY.md](../SECURITY.md) |
-| Third-party redistribution notices | [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) |
-| Historical workflow/design analysis | [lifecycle.md](lifecycle.md), [screen notes](../src/app/%28app%29/_ams/README.md) |
+| [Deployment](deployment.md) | Vercel/Neon, Node.js hosting, migrations, and demo setup |
+| [Environment](environment.md) | Required variables and optional integrations |
+| [Workflow](lifecycle.md) | Intake, inventory, controls, evidence, and reviews |
+| [Architecture](architecture.md) | Tenant isolation, authentication, storage, and derived data |
+| [Evidence pipeline](evidence-pipeline.md) | Upload validation and text extraction |
+| [Testing](testing.md) | Local checks and deployment verification |
+| [Current limitations](known-limitations.md) | Incomplete features and operational boundaries |
+| [Dependency security](dependency-security.md) | Dated dependency advisory review |
+| [Repository maintenance](repository.md) | Pull requests, CI, and branch protection |
 
-Historical design notes retain context from the original demo and may describe
-behaviour superseded by the public cleanup. Current limitations and tested
-commands take precedence. Update relevant documentation with behaviour changes;
-do not claim a planned capability is implemented.
+See also [contributing](../CONTRIBUTING.md), [security reporting](../SECURITY.md),
+and [third-party notices](../THIRD_PARTY_NOTICES.md).

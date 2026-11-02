@@ -1,7 +1,7 @@
 # Contributing
 
-Keep changes small and preserve tenant isolation, audit integrity, and honest
-workflow status. Discuss new features or architecture changes separately from
+Keep changes small and preserve tenant isolation, audit integrity, and accurate
+feature status. Discuss new features or architecture changes separately from
 bug fixes. Use synthetic data for examples and tests.
 
 Read `AGENTS.md`, `CLAUDE.md`, [architecture](docs/architecture.md), and
@@ -30,3 +30,5 @@ implicitly from a build or ordinary test against an operator's database.
 Contributions must be yours to redistribute under the project MIT licence.
 Preserve third-party notices and font licences. Do not reproduce ISO standard
 text or introduce real customer data. Report vulnerabilities through `SECURITY.md`.
+
+See [repository maintenance](docs/repository.md) for branch protection and CI settings.

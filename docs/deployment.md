@@ -16,7 +16,7 @@ The release remains experimental; use synthetic data and read
 4. Configure `DATABASE_URL`, a unique `BETTER_AUTH_SECRET`, and the application's
    production `BETTER_AUTH_URL` in the correct project/environment. Configure
    optional services only when you intend to use them. See [environment variables](environment.md).
-5. Explicitly approve initial schema setup against the selected database. In an
+5. Confirm the target database and review the migrations. In an
    administrative hosted shell configured for that database, run `npm run db:migrate`.
    This is a database-changing operation, separate from deployment.
 6. Deploy with `npm run vercel-build` (equivalent to `npm run build`). Builds do
@@ -37,10 +37,8 @@ The release remains experimental; use synthetic data and read
 9. Run the deployment verification checklist below. A green deployment alone
    does not establish authentication, persistence, tenant isolation, or readiness.
 
-Nothing in this guide requires software on the original maintainer's computer.
-Codex Cloud, a hosted development terminal, or your own CI runner can perform
-administrative commands. Put credentials in that environment's secure settings,
-not in PR text, shell history, or repository files.
+Run administrative commands in a local or hosted shell with credentials stored
+in its secure settings. Keep credentials out of pull requests and repository files.
 
 ## Authentication and custom domains
 
@@ -97,9 +95,7 @@ accounts. Existing account passwords are not reset by rerunning the seed.
 
 The seed upserts demo records, resets demo memberships, and rewrites demo link
 tables. It is not a backup/restore tool or a migration. Never run `db:reset` or
-`seed` against work you want to preserve. The initializer and demo fixtures were tested only in disposable in-memory
-databases during preparation. The guarded demo CLI was not run against an
-application database.
+`seed` against work you want to preserve.
 
 ## Deployment verification
 

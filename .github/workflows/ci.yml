@@ -1,13 +1,3 @@
-# The gate that a worktree workflow needs and a single checkout does not.
-#
-# With several branches in flight at once, "it built on my machine" stops meaning
-# anything — the machine that built it was checked out somewhere else. So every
-# push runs the same four commands CLAUDE.md names, in the same order, on a box
-# that has never seen this repo before.
-#
-# `npm run build` is here because it *is* the typecheck gate: Next resolves the
-# whole route graph, which `tsc --noEmit` alone does not.
-
 name: CI
 
 on:
@@ -41,6 +31,6 @@ jobs:
 
       # PGlite compiles a WASM Postgres in-process, so this needs no service
       # container and no network.
-      - run: npm test
+      - run: npm test -- --maxWorkers=2
 
       - run: npm run build
