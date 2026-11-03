@@ -30,7 +30,7 @@ with synthetic data. Forseti does not certify compliance or replace the ISO stan
 - Record imports and exports, trash, and restoration.
 - Readiness summaries and questionnaire drafts derived from workspace records.
 
-Draft helpers use deterministic text generation; active routes do not call an AI model.
+Draft suggestions use templates and workspace data. AI-powered drafting is not currently enabled.
 
 ## Quick start
 
