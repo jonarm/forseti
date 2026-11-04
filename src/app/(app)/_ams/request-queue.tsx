@@ -108,7 +108,7 @@ export function RequestQueue() {
             def={RECORD_KINDS.intake}
             onClick={() => setExportOpen(true)}
           />
-          <Button size="sm" render={<Link href="/intake/new" />}>
+          <Button size="sm" nativeButton={false} render={<Link href="/intake/new" />}>
             <Plus aria-hidden />
             New request
           </Button>

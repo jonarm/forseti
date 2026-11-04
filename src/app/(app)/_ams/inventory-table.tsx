@@ -221,7 +221,7 @@ export function InventoryTable({ initialSystems }: { initialSystems: AISystem[] 
             <Button
               variant="ghost"
               size="sm"
-              render={<Link href="/trash" />}
+              nativeButton={false} render={<Link href="/trash" />}
             >
               <Trash2 aria-hidden />
               Trash
