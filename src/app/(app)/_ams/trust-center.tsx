@@ -337,7 +337,7 @@ export function TrustCenter() {
                 find the few that need a forum decision, not to slow the rest
                 down.
               </p>
-              <Button size="sm" variant="outline" render={<Link href="/intake/new" />}>
+              <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/intake/new" />}>
                 Raise a request
               </Button>
             </>

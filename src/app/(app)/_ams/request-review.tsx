@@ -105,7 +105,7 @@ export function RequestReview({ requestId }: { requestId: string }) {
           title="No such request"
           body="Nothing in this organisation's queue has that reference. It may have been removed, or the link may belong to a different tenant."
           action={
-            <Button variant="outline" size="sm" render={<Link href="/intake" />}>
+            <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/intake" />}>
               Back to the queue
             </Button>
           }
@@ -310,7 +310,7 @@ export function RequestReview({ requestId }: { requestId: string }) {
             <Button
               variant="outline"
               size="sm"
-              render={<Link href={`/inventory/${request.createdSystemId}`} />}
+              nativeButton={false} render={<Link href={`/inventory/${request.createdSystemId}`} />}
             >
               Open the system it created
             </Button>
